@@ -12,6 +12,10 @@ module.exports = {
 			},
 		},
 		extend: {
+			boxShadow: {
+				"vertical": "0px 0px 10px 0px rgba(0,0,0,0.2)",
+				"vertical-secondary": "0px 0px 10px 0px rgba(193, 141, 191, 1)",
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

@@ -47,6 +47,7 @@ export function RegisterForm() {
 				.string()
 				.min(1, { message: t("notifications.firstName_req") })
 				.optional(),
+			showAdress: z.boolean().optional(),
 		})
 		.superRefine(({ password_repeat, password }, ctx) => {
 			if (password_repeat !== password) {
@@ -67,6 +68,7 @@ export function RegisterForm() {
 			company_name: "",
 			type: "private",
 			address: "",
+			showAdress: false,
 		},
 	})
 
@@ -119,7 +121,7 @@ export function RegisterForm() {
 			<form onSubmit={onSubmit} className="w-full space-y-2">
 				<AnimatePresence mode="wait">
 					{currentPage === 1 && (
-						<motion.div key={"page1"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						<motion.div className="grd-cols-1 grid gap-1.5" key={"page1"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 							<div className="flex w-full gap-1.5">
 								<FormField
 									control={form.control}
@@ -156,19 +158,6 @@ export function RegisterForm() {
 										<FormLabel>{t("user.phone")}</FormLabel>
 										<FormControl>
 											<PhoneInput defaultCountry="KZ" placeholder={t("user.phone")} {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="address"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.address")}</FormLabel>
-										<FormControl>
-											<Input placeholder="" type="text" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -228,6 +217,32 @@ export function RegisterForm() {
 									)}
 								/>
 							)}
+							<FormField
+								control={form.control}
+								name="address"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>{t("user.address")}</FormLabel>
+										<FormControl>
+											<Input placeholder="" type="text" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="showAdress"
+								render={({ field }) => (
+									<FormItem className="flex items-center space-x-3 space-y-0 rounded-md border p-4">
+										<FormControl>
+											<Checkbox className="h-6 w-6 rounded-full" onCheckedChange={field.onChange} />
+										</FormControl>
+										<FormLabel className="font-normal">{t("register.showAddress")}</FormLabel>
+									</FormItem>
+								)}
+							/>
+							
 						</motion.div>
 					)}
 					{currentPage === 3 && (

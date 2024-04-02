@@ -6,10 +6,12 @@ export type Pet_Response = {
 	sterilized: boolean
 	sex: "male" | "female"
 	weight: number
+	breed: string
 	description: string
 	ownerID: User_Response["_id"]
 	imagesPath: string[]
 	city: string
+	price: number
 	createdAt: string
 	updatedAt: string
 }
@@ -27,6 +29,9 @@ export type User_Response = {
 	companyName: string
 	firstName: string
 	lastName: string
+	address: string
+	show_address: boolean
+	aboutMe: string
 	phone: string
 	type: "private" | "shelter" | "breeder" | "nursery"
 	social: {
@@ -41,9 +46,9 @@ export type User_Response = {
 }
 
 export interface AboutUsLanguage {
-	about_us: {
-		label: string
-		text: {
+	text: {
+		about_us: {
+			label: string,
 			heading: string
 			keys: [string, string][]
 			conclusion: string

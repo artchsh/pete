@@ -6,6 +6,8 @@ import ChangeLanguage from "@/components/change-language"
 import { Card } from "@/components/ui/card"
 import { useQuery } from "@/lib/utils"
 import PWAInstallComponent from "@/components/pwa-install"
+import i18n from "@/i18"
+
 export default function IndexPage() {
 	// Setups
 	const navigate = useNavigate()
@@ -27,17 +29,19 @@ export default function IndexPage() {
 	}, [])
 
 	return (
-		<div className="flex flex-col gap-3">
-			<Card className="flex w-full flex-col items-center justify-center p-3">
-				<div className="flex flex-col">
-					<img loading="lazy" src="/images/repository-open-graph-russian.png" />
+		<div className="flex h-screen w-full flex-col items-center justify-center">
+			<div className="flex flex-col gap-3">
+				<h1 className="cursor-default select-none text-9xl font-bold text-[#c18dbf] transition-all duration-150 ease-in-out hover:scale-110">PETE</h1>
+				<p className="text-center text-2xl">{i18n.t("label.slogan")}</p>
+				<Card className="w-full p-3">
 					<div className="mx-auto grid items-center gap-1.5">
 						<ChangeLanguage label={false} />
 						<div className="flex gap-1.5">
-							<Button variant={"outline"} onClick={go}>
+							<Button className="w-full" variant={"outline"} onClick={go}>
 								{t("label.web")}
 							</Button>
 							<Button
+								className="w-full"
 								onClick={() => {
 									setShowHowToInstall(() => true)
 								}}>
@@ -45,8 +49,9 @@ export default function IndexPage() {
 							</Button>
 						</div>
 					</div>
-				</div>
-			</Card>
+				</Card>
+			</div>
+
 			<PWAInstallComponent manualApple icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={showHowToInstall} />
 		</div>
 	)

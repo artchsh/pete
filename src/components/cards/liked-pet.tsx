@@ -1,5 +1,5 @@
 import React, { lazy, useState } from "react"
-import { Card } from "@/components/ui/card"
+import { motion } from "framer-motion"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { AuthState, Pet_Response } from "@/lib/declarations"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
@@ -87,9 +87,9 @@ export default function LikedPet({ pet_id, setUserLiked }: { pet_id: Pet_Respons
 	}
 
 	return (
-		<Card className="mt-2 flex cursor-pointer items-center justify-between p-3">
+		<>
 			{pet && (
-				<>
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-lg border bg-card text-card-foreground shadow-sm mt-2 flex cursor-pointer items-center justify-between p-3">
 					{open && <PetOverlay open setOpen={setOpen} pet={pet} info contacts />}
 					<div
 						className="w-full"
@@ -109,8 +109,8 @@ export default function LikedPet({ pet_id, setUserLiked }: { pet_id: Pet_Respons
 							removePetFromLiked(pet._id)
 						}}
 					/>
-				</>
+					</motion.div>
 			)}
-		</Card>
+		</>
 	)
 }

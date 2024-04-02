@@ -23,7 +23,7 @@ export default function PwaLayout() {
 		<NavProvider>
 			<Toaster />
 			{determineHref() && <MobilePageHeader href={determineHref()!} />}
-			<motion.div className='flex items-center justify-center bg-[url("/images/background.webp")] object-cover' animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+			<motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 				<main className={`relative ${location.pathname !== "/pwa" ? "h-[calc(100vh-4rem)]" : "h-screen"} w-full max-w-lg bg-background`}>
 					<AnimatePresence mode="wait">
 						<Outlet />

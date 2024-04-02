@@ -15,7 +15,7 @@ import { useToast } from "./ui/use-toast"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 import { AxiosError } from "axios"
-
+import { motion } from "framer-motion"
 interface PetIcon {
 	_id: string
 	setUserPets?: React.Dispatch<React.SetStateAction<Pet_Response[]>>
@@ -38,7 +38,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 		error: AxiosError | null
 		isPending: boolean
 	} = useQuery({
-		queryKey: [`pet_${_id}`],
+		queryKey: ["pet", _id],
 		queryFn: () => axios.get(`${API.baseURL}/pets/find/${_id}`).then((res) => res.data),
 	})
 
@@ -73,7 +73,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 	}
 
 	useEffect(() => {
-		queryClient.fetchQuery({ queryKey: [`pet_${_id}`] })
+		queryClient.fetchQuery({ queryKey: ["pet", _id] })
 	}, [])
 
 	return (
@@ -81,20 +81,26 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 		!petPending && (
 			<>
 				{authState && authState._id === pet.ownerID ? <PetOverlay pet={pet} edit open={openPet} setOpen={setOpenPet} /> : <PetOverlay pet={pet} info contacts like open={openPet} setOpen={setOpenPet} />}
-				<Card
-					className="flex flex-col items-center gap-2 p-3"
+				<motion.div
+					className="flex w-full items-center justify-between gap-2 rounded-lg border bg-card p-3 text-card-foreground"
 					onClick={
 						authState && authState._id === pet.ownerID
 							? undefined
 							: () => {
 									setOpenPet(true)
 								}
-					}>
-					<Avatar>
-						<AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
-						<AvatarFallback>{pet.name[0]}</AvatarFallback>
-					</Avatar>
-					<p className="text-center">{pet.name}</p>
+					}
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}>
+					<div className="flex items-center gap-2">
+						<Avatar>
+							<AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+							<AvatarFallback>{pet.name[0]}</AvatarFallback>
+						</Avatar>
+
+						<p className="text-center">{pet.name}</p>
+					</div>
 					{authState && authState._id === pet.ownerID && (
 						<div className="grid grid-cols-2 grid-rows-1 gap-2">
 							<Button
@@ -129,7 +135,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 							</AlertDialog>
 						</div>
 					)}
-				</Card>
+				</motion.div>
 			</>
 		)
 	)

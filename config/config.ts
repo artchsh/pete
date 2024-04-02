@@ -9,14 +9,10 @@ const main = {
 		["navigation_main_bar.pages.support", "/support"],
 		["navigation_main_bar.pages.about_us", "/about-us"],
 	],
-	howToInstallPictures: {
-		IOS: ["/images/pwa/ios/1.jpeg", "/images/pwa/ios/2.jpeg", "/images/pwa/ios/3.jpeg"],
-	},
 	languages: [
 		["ru", "🇷🇺 Русский"],
-		["kz", "🇰🇿 Қазақ тілі"],
-		["en-US", "🇬🇧 English"],
-	],
+		["kz", "🇰🇿 Қазақ тілі"]
+	]
 } as const
 
 export { API, main }

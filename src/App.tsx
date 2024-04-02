@@ -27,9 +27,10 @@ import AboutUsPage from "./pages/web/AboutUs"
 
 const UserPage = lazy(() => import("./pages/pwa/User"))
 const Settings = lazy(() => import("./pages/pwa/Settings"))
-const Profile = lazy(() => import("./pages/pwa/Profile"))
+const ProfilePage = lazy(() => import("./pages/pwa/Profile"))
 const AddPetPage = lazy(() => import("./pages/pwa/PetAdd"))
-import Main from "./pages/pwa/Main"
+import MainPage from "./pages/pwa/Main"
+import PetsPage from "./pages/pwa/Pets"
 
 const refresh = createRefresh({
 	interval: 60 * 30 * 6, // The time in sec to refresh the Access token
@@ -81,12 +82,12 @@ function AnimatedRoutes() {
 						<Route path="/auth/login" element={<Login />} />
 						<Route path="/auth/register" element={<Register />} />
 					</Route>
-					<Route path="/pwa" element={<Main />} />
+					<Route path="/pwa" element={<MainPage />} />
 					<Route
 						path="/pwa/profile"
 						element={
 							<Suspense fallback={<ProfileSkeleton />}>
-								<Profile />
+								<ProfilePage />
 							</Suspense>
 						}
 					/>
@@ -103,6 +104,14 @@ function AnimatedRoutes() {
 						element={
 							<Suspense fallback={<UserSkeleton />}>
 								<UserPage />
+							</Suspense>
+						}
+					/>
+					<Route
+						path="/pwa/pets/:userId"
+						element={
+							<Suspense fallback={<UserSkeleton />}>
+								<PetsPage />
 							</Suspense>
 						}
 					/>

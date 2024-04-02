@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { API } from "@config"
 import { type Pet_Response, AuthState, User_Response } from "@declarations"
 import { axiosAuth as axios } from "@utils"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import ReactImageGallery from "react-image-gallery"
 import { formatAge } from "@/lib/utils"
 import { OverlayContent, Overlay } from "./ui/overlay"
@@ -34,7 +34,7 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 	const navigate = useNavigate()
 	const { data: ownerData } = useQuery<User_Response>({
 		queryKey: ["owner", pet._id],
-		queryFn: () => axios.get(`${API.baseURL}/users/${pet.ownerID}`).then((res) => res.data)
+		queryFn: () => axios.get(`${API.baseURL}/users/${pet.ownerID}`).then((res) => res.data),
 	})
 
 	// States
@@ -61,14 +61,19 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 
 				{ownerData && info && (
 					<Card className="flex h-full w-full flex-col rounded-none border-none">
-						<BackButton className="pb-0 pl-4" action={() => setOpen(false)} />
-						<CardTitle className="p-6 pb-2 pt-2">
-							{pet.name}, {formatAge(pet.birthDate, t("pet.year"), t("pet.month")) as string}
-							<br />
-							<span className="font-normal text-muted" onClick={() => navigate("/pwa/users/" + ownerData._id)}>
-								{ownerData.companyName ? ownerData.companyName : ownerData.firstName + " " + ownerData.lastName}
-							</span>
-						</CardTitle>
+						<div className="sticky top-0 z-[100] bg-card border-b border-border">
+							<BackButton className="pb-0 pl-4 " action={() => setOpen(false)} />
+							<div className={`flex p-6 pb-4 pt-0 text-2xl font-semibold leading-none tracking-tight ${like && " items-center justify-between"}`}>
+								<div>
+									{pet.name}, {formatAge(pet.birthDate, t("pet.year"), t("pet.month")) as string}
+									<br />
+									<span className="font-normal text-muted" onClick={() => navigate("/pwa/users/" + ownerData._id)}>
+										{ownerData.companyName ? ownerData.companyName : ownerData.firstName + " " + ownerData.lastName}
+									</span>
+								</div>
+								{like && <LikeButton pet={pet} />}
+							</div>
+						</div>
 						<CardContent className="p-0">
 							<ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={true} showPlayButton={false} />
 						</CardContent>
@@ -96,8 +101,6 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 						)}
 					</Card>
 				)}
-
-				{like && <LikeButton pet={pet} />}
 			</OverlayContent>
 		</Overlay>
 	)

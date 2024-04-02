@@ -1,60 +1,29 @@
 import React, { useEffect, lazy, Suspense } from "react"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 import { useTranslation } from "react-i18next"
-import axios, { AxiosError } from "axios"
-import { API } from "@config"
-import { Pet_Response } from "@declarations"
 import { useNavigate } from "react-router-dom"
-import { Settings } from "lucide-react"
+import { ArrowRight, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import AddPetCard from "@/components/cards/add-pet"
-import { useQuery } from "@tanstack/react-query"
 import { Helmet } from "react-helmet"
 import { useNav } from "@/lib/contexts"
-import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
-import { axiosErrorHandler } from "@/lib/utils"
+import { useGetFavoritePets, useGetUserPets } from "@/lib/hooks"
+import { AnimatePresence, motion } from "framer-motion"
+import LoadingSpinner from "@/components/loading-spinner"
 
 const LikedPet = lazy(() => import("@/components/cards/liked-pet"))
-const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
+const MyPetIconProfile = lazy(() => import("@/components/my-pet-icon-profile"))
 const MyProfileCard = lazy(() => import("@/components/cards/my-profile"))
 
 export default function Profile() {
 	// Setups
 	const isAuthenticated = useIsAuthenticated()
-	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
 	const navigate = useNavigate()
-	const {
-		data: userPets,
-		error: userPetsError,
-		isPending: userPetsPending,
-	} = useQuery<Pet_Response[], AxiosError>({
-		queryKey: ["me", "pets", isAuthenticated],
-		queryFn: () => axios.get(`${API.baseURL}/me/pets`, { headers: { Authorization: authHeader } }).then((res) => res.data),
-		retry(failureCount, error) {
-			if (error.response?.status === 401) {
-				return false
-			}
-			return failureCount < 2
-		},
-	})
-
-	const {
-		data: likedPets,
-		error: likedPetsError,
-		isPending: likedPetsPending,
-	} = useQuery<Pet_Response[], AxiosError>({
-		queryKey: ["me", "pets", isAuthenticated, "liked"],
-		queryFn: () => axios.get(`${API.baseURL}/me/liked`, { headers: { Authorization: authHeader }}).then((res) => res.data),
-		retry(failureCount, error) {
-			if (error.response?.status === 401) {
-				return false
-			}
-			return failureCount < 2
-		},
-	})
-	
 	const { updateNavText } = useNav()
+
+	// Fetch data
+	const { data: userPets, error: userPetsError, isPending: userPetsPending } = useGetUserPets()
+	const { data: likedPets, error: likedPetsError, isPending: likedPetsPending } = useGetFavoritePets()
 
 	if (userPetsError) {
 		console.error(userPetsError)
@@ -66,7 +35,7 @@ export default function Profile() {
 
 	useEffect(() => {
 		updateNavText(t("header.profile"))
-	}, [])
+	}, [likedPets])
 
 	return (
 		<>
@@ -89,41 +58,43 @@ export default function Profile() {
 					)}
 				</Suspense>
 
-				<div className="mt-3 p-1">
-					<p>{t("label.myPets")}</p>
-					<div className="mt-2 grid grid-cols-3 gap-2">
-						{userPetsPending && <div>Loading...</div>}
-						{userPets?.map((pet, index) => <MyPetIcon key={index} _id={pet._id} />)}
-						<AddPetCard />
-					</div>
-				</div>
-
-				{likedPetsPending && <div>Likes loading...</div>}
-
-				{likedPets && likedPets.length > 0 && (
-					<div className="p-1">
-						<p>{t("label.myLikes")}</p>
-
-						{likedPets?.map((pet, index) => (
-							<LikedPet key={index} pet_id={pet._id} setUserLiked={() => {}} />
-						))}
+				{isAuthenticated && (
+					<div className="mt-3 rounded-lg bg-card p-3 shadow-lg">
+						<div className="flex justify-between">
+							<p className="font-bold">{t("label.myPets")}</p>
+							{userPets && userPets.length > 3 && (
+								<Button
+									variant={"link"}
+									className="m-0 h-fit items-center gap-1.5 p-0"
+									onClick={() => {
+										navigate("/pwa/pets/me")
+									}}>
+									{t("button.seeAll") + ` (${userPets.length})`}
+									<ArrowRight />
+								</Button>
+							)}
+						</div>
+						<div className="mt-2 grid grid-cols-3 grid-rows-1 gap-2">
+							{userPetsPending && <LoadingSpinner />}
+							<AnimatePresence>{userPets?.slice(0, 2).map((pet, index) => <MyPetIconProfile key={index} _id={pet._id} />)}</AnimatePresence>
+							<motion.div className="flex flex-col items-center justify-center rounded-lg border bg-card text-card-foreground" onClick={() => navigate("/pwa/pets/add")} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+							
+								<Plus />
+								<p className="h-fit p-2 pt-0 text-center">{t("pet.add.btn")}</p>
+							
+							</motion.div>
+						</div>
 					</div>
 				)}
-				<div className="fixed bottom-5 right-5">
-					<SettingsButton />
+
+				<div className="mt-3 rounded-lg bg-card p-3 shadow-lg">
+					<p className="font-bold">{t("label.myLikes")}</p>
+					<div className="grid grid-cols-1 gap-2">
+						{likedPetsPending && <div>Likes loading...</div>}
+						<AnimatePresence>{likedPets && likedPets.length > 0 && likedPets?.map((pet, index) => <LikedPet key={index} pet_id={pet} setUserLiked={() => {}} />)}</AnimatePresence>
+					</div>
 				</div>
 			</div>
 		</>
-	)
-}
-
-function SettingsButton() {
-	// Setups
-	const navigate = useNavigate()
-
-	return (
-		<button className="rounded-full bg-primary p-3 text-border" onClick={() => navigate("/pwa/settings")}>
-			<Settings className="h-8 w-8" />
-		</button>
 	)
 }

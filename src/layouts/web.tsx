@@ -8,8 +8,8 @@ export default function WebLayout() {
 		<div className="h-screen">
 			<NavigationBar />
 			<Toaster />
-			<div className="flex justify-center p-4 pt-20">
-				<main className="w-full md:max-w-7xl">
+			<div className="flex justify-center">
+				<main className="w-full md:max-w-7xl px-4">
 					<Outlet />
 				</main>
 			</div>

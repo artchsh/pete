@@ -101,11 +101,8 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 	}, [])
 
 	return (
-		<div className="fixed bottom-2 right-2">
-			<Button variant={"outline"} size={"icon"} className="w-fit gap-2 rounded-full p-6" style={{ color: "#FF0000" }} onClick={likePet}>
-				<span className="text-white">{t("label.addToLiked")}</span>
+			<Button variant={"link"} size={"icon"} className="w-fit" style={{ color: "#FF0000" }} onClick={likePet}>
 				<Heart fill={liked ? "#FF0000" : "transparent"} />
 			</Button>
-		</div>
 	)
 }

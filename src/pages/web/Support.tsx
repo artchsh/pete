@@ -8,11 +8,11 @@ export default function SupportPage() {
 	const { t } = useTranslation()
 
 	return (
-		<>
+		<div className="flex h-screen w-full flex-col items-center justify-center">
 			<Helmet>
 				<title>{"Pete - " + t("label.support.default")}</title>
 			</Helmet>
 			<SupportCard />
-		</>
+		</div>
 	)
 }

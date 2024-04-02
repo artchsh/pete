@@ -41,7 +41,7 @@ export default function AddPetPage() {
 			<Helmet>
 				<title>{"Pete - " + t("header.petAdd")}</title>
 			</Helmet>
-			<div className="m-2 mb-20 p-2">
+			<div className="p-2 h-full">
 				<AddPetForm />
 			</div>
 		</>
