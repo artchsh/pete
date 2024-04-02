@@ -23,19 +23,19 @@ export default function Profile() {
 
 	// Fetch data
 	const { data: userPets, error: userPetsError, isPending: userPetsPending } = useGetUserPets()
-	const { data: likedPets, error: likedPetsError, isPending: likedPetsPending } = useGetFavoritePets()
+	const { data: favoritePets, error: favoritePetsError, isPending: favoritePetsPending } = useGetFavoritePets()
 
 	if (userPetsError) {
 		console.error(userPetsError)
 	}
 
-	if (likedPetsError) {
-		console.error(likedPetsError)
+	if (favoritePetsError) {
+		console.error(favoritePetsError)
 	}
 
 	useEffect(() => {
 		updateNavText(t("header.profile"))
-	}, [likedPets])
+	}, [favoritePets])
 
 	return (
 		<>
@@ -67,7 +67,7 @@ export default function Profile() {
 									variant={"link"}
 									className="m-0 h-fit items-center gap-1.5 p-0"
 									onClick={() => {
-										navigate("/pwa/pets/me")
+										navigate("/pwa/users/me/pets")
 									}}>
 									{t("button.seeAll") + ` (${userPets.length})`}
 									<ArrowRight />
@@ -78,22 +78,20 @@ export default function Profile() {
 							{userPetsPending && <LoadingSpinner />}
 							<AnimatePresence>{userPets?.slice(0, 2).map((pet, index) => <MyPetIconProfile key={index} _id={pet._id} />)}</AnimatePresence>
 							<motion.div className="flex flex-col items-center justify-center rounded-lg border bg-card text-card-foreground" onClick={() => navigate("/pwa/pets/add")} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-							
 								<Plus />
 								<p className="h-fit p-2 pt-0 text-center">{t("pet.add.btn")}</p>
-							
 							</motion.div>
 						</div>
 					</div>
 				)}
 
-				<div className="mt-3 rounded-lg bg-card p-3 shadow-lg">
+				{/* <div className="mt-3 rounded-lg bg-card p-3 shadow-lg">
 					<p className="font-bold">{t("label.myLikes")}</p>
 					<div className="grid grid-cols-1 gap-2">
-						{likedPetsPending && <div>Likes loading...</div>}
-						<AnimatePresence>{likedPets && likedPets.length > 0 && likedPets?.map((pet, index) => <LikedPet key={index} pet_id={pet} setUserLiked={() => {}} />)}</AnimatePresence>
+						{favoritePetsPending && <div>Likes loading...</div>}
+						<AnimatePresence>{favoritePets && favoritePets.length > 0 && favoritePets?.map((pet, index) => <LikedPet key={index} pet_id={pet} setUserLiked={() => {}} />)}</AnimatePresence>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</>
 	)

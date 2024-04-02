@@ -50,8 +50,8 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 	}, [])
 
 	return (
-		<Overlay open={open}>
-			<OverlayContent className="h-full max-h-full overflow-scroll">
+		<dialog open={open} className="absolute top-0 left-0 right-0 h-screen w-full">
+			<div className="h-full max-h-full overflow-scroll">
 				{edit && pet.ownerID === user?._id && (
 					<div className="m-4 mb-16 rounded-lg border bg-card p-4">
 						<BackButton className="p-0" action={() => setOpen(false)} />
@@ -101,7 +101,7 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 						)}
 					</Card>
 				)}
-			</OverlayContent>
-		</Overlay>
+			</div>
+		</dialog>
 	)
 }

@@ -101,7 +101,7 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 	}, [])
 
 	return (
-			<Button variant={"link"} size={"icon"} className="w-fit" style={{ color: "#FF0000" }} onClick={likePet}>
+			<Button size={"icon"} className="w-fit rounded-sm bg-white absolute right-6 top-6 z-[1]" style={{ color: "#FF0000" }} onClick={likePet}>
 				<Heart fill={liked ? "#FF0000" : "transparent"} />
 			</Button>
 	)

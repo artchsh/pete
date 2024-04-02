@@ -11,8 +11,24 @@ import i18n from "../i18"
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
+// lat lon
+export function calculateDistance(point1: [number, number], point2: [number, number]) {
+	const R = 6371e3 // metres
+	const φ1 = point1[0] * Math.PI / 180 // φ, λ in radians
+	const φ2 = point2[0] * Math.PI / 180
+	const Δφ = (point2[0] - point1[0]) * Math.PI / 180
+	const Δλ = (point2[1] - point1[1]) * Math.PI / 180
 
-export function formatAge(age: string, i18_years: string, i18_months: string, number: boolean = false) {
+	const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+		Math.cos(φ1) * Math.cos(φ2) *
+		Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+	const distance = R * c // in metres
+	return distance
+}
+
+export function formatAge(age: string, number: boolean = false) {
 	// Parse the given date string to a Date object
 	const birthDate = new Date(age)
 
@@ -50,8 +66,8 @@ export function formatAge(age: string, i18_years: string, i18_months: string, nu
 		}
 	}
 
-	const yearsString: string = Number(years) > 0 ? `${years} ${i18_years}` : ""
-	const monthsString: string = Number(months) > 0 ? `${months} ${i18_months}` : ""
+	const yearsString: string = Number(years) > 0 ? `${years} ${i18n.t("pet.year")}` : ""
+	const monthsString: string = Number(months) > 0 ? `${months} ${i18n.t("pet.month")}` : ""
 
 	// Return the formatted age string
 	return yearsString + (yearsString && monthsString ? " " : "") + monthsString

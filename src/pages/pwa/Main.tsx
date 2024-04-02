@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { API } from "@config"
 import { Pet_Filter, AuthState, Pet_Response } from "@declarations"
 import { axiosAuth as axios, cn, defaultFilterValue, axiosErrorHandler, isPWA } from "@utils"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { LucideCat, LucideDog, MoveLeft, MoveRight } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -31,6 +31,7 @@ export default function Main() {
 	const isAuthenticated = useIsAuthenticated()
 	const authHeader = useAuthHeader()
 	const user = useAuthUser<AuthState>()
+	const location = useLocation()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
@@ -64,17 +65,17 @@ export default function Main() {
 	)
 
 	const addNewPets = useCallback(
-		(pets: Pet_Response[]): void => {
+		(pets: Pet_Response[]): Pet_Response[] => {
 			toast({ description: "Pets updated!" })
 			const filteredNewPets = pets.filter((pet) => !allPets.find(({ _id }) => _id === pet._id))
 			const combinedPets = [...allPets, ...filteredNewPets]
 			// This checks if there are new pets to add and combines them with the existing pets.
-			setAllPets(combinedPets)
+			return combinedPets
 		},
 		[allPets, page],
 	)
 
-	const fetchPets = (page: number = 1) => {
+	const fetchPets = (page: number = 1, addNew: boolean = true) => {
 		setLoadingPets(true)
 		const queryString = buildQueryString(page)
 		axios
@@ -82,7 +83,10 @@ export default function Main() {
 			.then((res: AxiosResponse) => {
 				let newPets: Pet_Response[] = res.data
 				newPets = filterPets(newPets)
-				addNewPets(newPets)
+				if (addNew) {
+					newPets = addNewPets(newPets)
+				}
+				setAllPets(newPets)
 			})
 			.catch(axiosErrorHandler)
 			.finally(() => {
@@ -100,7 +104,11 @@ export default function Main() {
 			fetchPets(allPets.length / 10 + 1)
 			console.log("Fetch more pets")
 		}
-	}, [current, filter?.owner_type, filter?.sex, filter?.sterilized, filter?.type, filter?.weight])
+	}, [current])
+
+	useEffect(() => {
+		fetchPets(1, false)
+	}, [filter?.owner_type, filter?.sex, filter?.sterilized, filter?.type, filter?.weight])
 
 	useEffect(() => {
 		if (api) {
@@ -118,6 +126,7 @@ export default function Main() {
 			setOpenInstall(true)
 		}
 		fetchPets()
+		console.log(location.state)
 	}, [])
 
 	return (

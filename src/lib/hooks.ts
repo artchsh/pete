@@ -4,6 +4,8 @@ import { Pet_Response } from "./declarations"
 import axios, { AxiosError } from "axios"
 import { API } from "@config"
 import { useEffect, useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import i18n from "@/i18"
 
 const LOCAL = {
     liked: "_data_offline_liked",
@@ -50,6 +52,38 @@ export function useGetFavoritePets() {
         error,
         isPending,
     }
+}
+
+export function useGeoLocation() {
+    // Setups
+    const { toast } = useToast()
+    // States
+    const [geoLocation, setGeoLocation] = useState<GeolocationPosition>()
+
+    useEffect(() => {
+        navigator.permissions.query({ name: "geolocation" }).then((result) => {
+            if (result.state === "granted") {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    setGeoLocation(position)
+                })
+            } else if (result.state === "prompt") {
+                toast({ title: i18n.t("info.geoConsent.title"), description: i18n.t("info.geoConsent.description") })
+                navigator.geolocation.getCurrentPosition((position) => {
+                    setGeoLocation(position)
+                })
+            } else if (result.state === "denied") {
+                console.log("Geolocation is denied")
+            }
+            result.onchange = () => {
+                console.log(result.state)
+            }
+        })
+        navigator.geolocation.getCurrentPosition((position) => {
+            setGeoLocation(position)
+        })
+    }, [])
+
+    return geoLocation
 }
 
 export function useGetUserPets(user_id: string = "me") {

@@ -12,6 +12,10 @@ export type Pet_Response = {
 	imagesPath: string[]
 	city: string
 	price: number
+	geolocation: {
+        latitude: number
+        longitude:  number
+    }
 	createdAt: string
 	updatedAt: string
 }
