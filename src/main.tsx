@@ -12,7 +12,8 @@ import { registerSW } from "virtual:pwa-register"
 const updateSW = registerSW({
 	onNeedRefresh() {
 		updateSW(true)
-		console.info("[PWA] App has been updated")
+		alert("Новая версия была загружена! Пожалуйста, перезагрузите страницу.")
+		location.reload()
 	},
 	onOfflineReady() {
 		// window.alert('App has been loaded.')

@@ -14,7 +14,7 @@ export default function ChangeLanguage({ label = true }: { label?: boolean }) {
 	const [currentLanguage, setLanguage] = useState<string>()
 
 	useEffect(() => {
-		setLanguage(lanaguagesCodes.includes(i18n.language) ? i18n.language : "en")
+		setLanguage(lanaguagesCodes.includes(i18n.language as "ru" | "kz") ? i18n.language : "en")
 		i18n.changeLanguage(currentLanguage)
 	}, [])
 

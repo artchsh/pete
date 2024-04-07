@@ -20,9 +20,8 @@ import { Checkbox } from "../ui/checkbox"
 import { useToast } from "../ui/use-toast"
 import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { AxiosError } from "axios"
 
-export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Response["_id"]; setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangePetForm({ pet_id }: { pet_id: Pet_Response["_id"] }) {
 	// Setups
 	const { t } = useTranslation()
 	const user = useAuthUser<AuthState>()
@@ -40,6 +39,8 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 		weight: z.string(),
 		sex: z.enum(["male", "female"]),
 		description: z.string({ required_error: "Description is required!" }),
+		price: z.number().default(0),
+		breed: z.string().default(""),
 	})
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -51,19 +52,13 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 			weight: "0",
 			sex: "male",
 			description: "",
+			price: 0,
+			breed: "",
 		},
 	})
-	const {
-		data: petData,
-		error: petError,
-	}: {
-		data: Pet_Response | undefined
-		error: Error | null
-		isPending: boolean
-	} = useQuery({
-		queryKey: [`pet_${pet_id}`],
-		queryFn: () => axios.get(`${API.baseURL}/pets/find/${pet_id}`).then((res) => res.data),
-		refetchInterval: 2000,
+	const { data: petData } = useQuery<Pet_Response>({
+		queryKey: ["pet", pet_id],
+		queryFn: () => axios.get(`${API.baseURL}/pets/${pet_id}`).then((res) => res.data),
 	})
 
 	// States
@@ -85,6 +80,8 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 			formData.append("weight", JSON.stringify(Number(values.weight)))
 			formData.append("sex", values.sex)
 			formData.append("ownerID", user._id)
+			formData.append("price", JSON.stringify(values.price))
+			formData.append("breed", values.breed)
 			formData.append("city", localStorage.getItem("_city") || "0")
 			formData.append("imagesPath", JSON.stringify(images.map((img) => img.original)))
 			if (files && images[0].original.includes("blob")) {
@@ -93,7 +90,7 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 				}
 			}
 			axios
-				.post(`${API.baseURL}/pets/edit/${pet_id}`, formData, {
+				.post(`${API.baseURL}/pets/${pet_id}`, formData, {
 					headers: {
 						"Content-Type": "multipart/form-data",
 						Authorization: authHeader,
@@ -102,11 +99,12 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 				.catch(axiosErrorHandler)
 				.finally(() => {
 					setLoadingState(false)
-					setOpen(false)
 					queryClient.invalidateQueries({
-						queryKey: [`pet_${pet_id}`],
+						queryKey: ["pet", pet_id],
 					})
-					queryClient.invalidateQueries({ queryKey: ["pets"] })
+					queryClient.invalidateQueries({
+						queryKey: ["user", user._id, "pets"],
+					})
 					toast({ description: t("pet.updated") })
 					navigate("/pwa/profile")
 				})
@@ -151,9 +149,11 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 		}
 	}, [petData, form])
 
-	if (petError) {
-		axiosErrorHandler(petError as AxiosError)
-	}
+	useEffect(() => {
+		if (petData && user?._id !== petData.ownerID) {
+			navigate("/pwa/profile")
+		}
+	}, [])
 
 	return (
 		<Form {...form}>

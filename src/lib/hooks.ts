@@ -1,93 +1,110 @@
-import { useState, useEffect, useCallback } from "react"
-import { AuthState, Pet_Filter, Pet_Response, User_Response } from "./declarations"
-import axios, { AxiosResponse } from "axios"
-import { API } from "@config"
-import { axiosErrorHandler } from "./utils"
-import { toast } from "@/components/ui/use-toast"
+import { useQuery } from "@tanstack/react-query"
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
+import { AuthState, Pet_Response } from "./declarations"
+import axios, { AxiosError } from "axios"
+import { API, LOCAL } from "@config"
+import { useEffect, useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import i18n from "@/i18"
 import useAuthUser from "react-auth-kit/hooks/useAuthUser"
-import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 
-export function useGetReccommendations(page: number = 1, filter?: Pet_Filter) {
-	const isAuthenticated = useIsAuthenticated()
-	const user = useAuthUser<AuthState>()
+export function useGetFavoritePets() {
+	// States
+	const [favoritePets, setFavoritePets] = useState<Pet_Response["_id"][]>([])
 
-	const [allPets, setAllPets] = useState<Pet_Response[]>([])
-	const [loading, setLoading] = useState<boolean>(true)
-	const [userLoading, setUserLoading] = useState<boolean>(false)
-	const [updatingCache, setUpdatingCache] = useState<boolean>(false)
+	// Setups
+	const authHeader = useAuthHeader()
+	const authState = useAuthUser<AuthState>()
 
-	const buildQueryString = useCallback((page: number): string => {
-		const params = new URLSearchParams(filter as Record<string, string>).toString()
-		const paginationParams = `page=${page}&limit=10`
-		return `${paginationParams}&${params}`
-	}, [filter])
+	const { data, error, isPending } = useQuery<Pet_Response[], AxiosError>({
+		queryKey: ["user", "pets", authState?._id, "liked"],
+		queryFn: () => axios.get(`${API.baseURL}/users/me/liked`, { headers: { Authorization: authHeader } }).then((res) => res.data),
+		retry(failureCount, error) {
+			if (error.response?.status === 401) {
+				return false
+			}
+			return failureCount < 2
+		},
+		enabled: !!authState,
+	})
 
-	const getCached = () => {
-		const cachedPets = localStorage.getItem("_data_allPets")
-		if (cachedPets) {
-			setAllPets(JSON.parse(cachedPets))
-			setLoading(false)
-			setUpdatingCache(true)
+	function _fetchFavoritePetsLocalStorage() {
+		const _favoritePets = localStorage.getItem(LOCAL.liked)
+		if (_favoritePets) {
+			return JSON.parse(_favoritePets) as Pet_Response["_id"][]
 		}
+		return []
 	}
 
-	const cachePets = useCallback((pets: Pet_Response[]): void => {
-		localStorage.setItem("_data_allPets", JSON.stringify(allPets.length < 20 ? pets : allPets))
-		setAllPets(pets)
-	}, [allPets])
-
-	const addNewPets = useCallback((pets: Pet_Response[], page: number): Pet_Response[] => {
-		return page !== 1 ? [...allPets, ...pets] : pets
-	}, [allPets])
-
-	const removeDuplicatePets = useCallback((pets: Pet_Response[]): Pet_Response[] => {
-		const petIds = new Set(allPets.map((pet) => pet._id))
-		return pets.filter((pet) => !petIds.has(pet._id))
-	}, [allPets])
-
-	const filterPets = useCallback((pets: Pet_Response[]) => {
-		if (isAuthenticated() && user) {
-			setUserLoading(true)
-			axios
-				.get(`${API.baseURL}/users/find/${user._id}`)
-				.then((res: AxiosResponse) => {
-					const userData: User_Response = res.data
-					pets = pets.filter((pet) => !userData.liked.includes(pet._id))
-					pets = pets.filter((pet) => pet.ownerID !== user._id)
-				})
-				.catch(axiosErrorHandler)
-				.finally(() => { setUserLoading(false) })
-		} else {
-			const browserLiked = JSON.parse(localStorage.getItem("_data_offline_liked") || "[]") as string[]
-			pets = pets.filter((pet) => !browserLiked.includes(pet._id))
-		}
-		return pets
-	}, [isAuthenticated, user])
-
 	useEffect(() => {
-		setLoading(true)
-		getCached()
-		const queryString = buildQueryString(page)
-		axios
-			.get(`${API.baseURL}/pets/recommendations?${queryString}`)
-			.then((res: AxiosResponse) => {
-				let pets: Pet_Response[] = res.data
-				pets = filterPets(pets)
-				pets = addNewPets(pets, page)
-				pets = removeDuplicatePets(pets)
-				cachePets(pets)
-				toast({ description: "Pets updated!" })
-			})
-			.catch(axiosErrorHandler)
-			.finally(() => {
-				setLoading(false)
-				setUpdatingCache(false)
-			})
-	}, [page, filter?.owner_type, filter?.sex, filter?.sterilized, filter?.type, filter?.weight])
+		const _favoritePets = _fetchFavoritePetsLocalStorage()
+		setFavoritePets(() => [..._favoritePets, ...((data && data?.length > 0 && data?.map((pet) => pet._id)) || [])])
+	}, [])
 
 	return {
-		data: allPets,
-		loading: (loading || userLoading),
-		updatingCache: updatingCache
+		data: favoritePets,
+		error,
+		isPending,
+	}
+}
+
+export function useGeoLocation() {
+	// Setups
+	const { toast } = useToast()
+	// States
+	const [geoLocation, setGeoLocation] = useState<GeolocationPosition>()
+
+	useEffect(() => {
+		navigator.permissions.query({ name: "geolocation" }).then((result) => {
+			if (result.state === "granted") {
+				navigator.geolocation.getCurrentPosition((position) => {
+					setGeoLocation(position)
+				})
+			} else if (result.state === "prompt") {
+				toast({ title: i18n.t("info.geoConsent.title"), description: i18n.t("info.geoConsent.description") })
+				navigator.geolocation.getCurrentPosition((position) => {
+					setGeoLocation(position)
+				})
+			} else if (result.state === "denied") {
+				console.log("Geolocation is denied")
+			}
+			result.onchange = () => {
+				console.log(result.state)
+			}
+		})
+		navigator.geolocation.getCurrentPosition((position) => {
+			setGeoLocation(position)
+		})
+	}, [])
+
+	return geoLocation
+}
+
+export function useGetUserPets(user_id: string = "me") {
+	// Setups
+	const authHeader = useAuthHeader()
+	if (!authHeader) {
+		return {
+			data: null,
+			error: null,
+			isPending: false,
+		}
+	}
+	const { data, error, isPending } = useQuery<Pet_Response[], AxiosError>({
+		queryKey: ["user", user_id, "pets"],
+		queryFn: () => axios.get(`${API.baseURL}/users/${user_id}/pets`, { headers: { Authorization: authHeader } }).then((res) => res.data),
+		retry(failureCount, error) {
+			if (error.response?.status === 401) {
+				return false
+			}
+			return failureCount < 2
+		},
+		enabled: !!user_id,
+	})
+
+	return {
+		data,
+		error,
+		isPending,
 	}
 }

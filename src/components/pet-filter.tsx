@@ -7,10 +7,18 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "./ui/checkbox"
 import { useTranslation } from "react-i18next"
 import { filterValues, defaultFilterValue } from "@/lib/utils"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
+import { API } from "@config"
+import { motion } from "framer-motion"
 
 export default function PetFilter({ updateFilter, filter, children }: { updateFilter: (filter: Pet_Filter) => void; filter: Pet_Filter; children: React.ReactNode }) {
 	// Setups
 	const { t } = useTranslation()
+	const { data: petBreeds, isPending: petBreedsPending } = useQuery<{ [key: string]: string[] }>({
+		queryKey: ["petFilter"],
+		queryFn: () => axios.get(`${API.baseURL}/pets/breeds`).then((res) => res.data),
+	})
 
 	// States
 	const [type, setType] = useState<Pet_Filter["type"]>(filter.type)
@@ -18,6 +26,7 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 	const [sex, setSex] = useState<Pet_Filter["sex"] | string>(filter.sex)
 	const [weight, setWeight] = useState<Pet_Filter["weight"]>(filter.weight || 0)
 	const [ownerType, setOwnerType] = useState<Pet_Filter["owner_type"] | string>(filter.owner_type)
+	const [breed, setBreed] = useState<string>(filter.breed)
 
 	// Functions
 	function onSubmit() {
@@ -27,6 +36,7 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 			sex: sex as Pet_Filter["sex"],
 			weight,
 			owner_type: ownerType as Pet_Filter["owner_type"],
+			breed,
 		})
 	}
 
@@ -42,6 +52,7 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 			sex: defaultFilterValue.sex,
 			weight: defaultFilterValue.weight,
 			owner_type: defaultFilterValue.owner_type,
+			breed: defaultFilterValue.breed,
 		})
 	}
 
@@ -56,7 +67,7 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 					</DrawerHeader>
 					<div className="p-4 pb-0">
 						<div className="grid space-y-4">
-							<div className="flex w-full gap-2">
+							<motion.div className="flex w-full gap-2">
 								<div className="grid w-full gap-1.5">
 									<Label htmlFor="">{t("pet.type.default")}</Label>
 									<Select value={type} onValueChange={setType}>
@@ -72,36 +83,58 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 										</SelectContent>
 									</Select>
 								</div>
+								{petBreedsPending && (
+									<div className="grid w-full gap-1.5">
+										<Label htmlFor="">{t("pet.ownerType")}</Label>
+										<Select value={ownerType} onValueChange={setOwnerType}>
+											<SelectTrigger>
+												<SelectValue placeholder={"None"} />
+											</SelectTrigger>
+											<SelectContent>
+												{filterValues.owner_type.map((ownerType) => (
+													<SelectItem key={ownerType} value={ownerType}>
+														{t("user.type." + ownerType)}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+								)}
+							</motion.div>
+							<div className="flex w-full gap-2">
 								<div className="grid w-full gap-1.5">
-									<Label htmlFor="">{t("pet.ownerType")}</Label>
-									<Select value={ownerType} onValueChange={setOwnerType}>
+									<Label htmlFor="sex">{t("pet.sex.default")}</Label>
+									<Select value={sex} onValueChange={setSex}>
 										<SelectTrigger>
 											<SelectValue placeholder={"None"} />
 										</SelectTrigger>
 										<SelectContent>
-											{filterValues.owner_type.map((ownerType) => (
-												<SelectItem key={ownerType} value={ownerType}>
-													{t("user.type." + ownerType)}
+											{filterValues.sex.map((petSex) => (
+												<SelectItem key={petSex} value={petSex}>
+													{t("pet.sex." + petSex)}
 												</SelectItem>
 											))}
 										</SelectContent>
 									</Select>
 								</div>
-							</div>
-							<div className="grid gap-1.5">
-								<Label htmlFor="sex">{t("pet.sex.default")}</Label>
-								<Select value={sex} onValueChange={setSex}>
-									<SelectTrigger>
-										<SelectValue placeholder={"None"} />
-									</SelectTrigger>
-									<SelectContent>
-										{filterValues.sex.map((petSex) => (
-											<SelectItem key={petSex} value={petSex}>
-												{t("pet.sex." + petSex)}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
+								<div className="grid w-full gap-1.5">
+									<Label htmlFor="breed">{t("pet.breed")}</Label>
+									<Select value={breed} onValueChange={setBreed}>
+										<SelectTrigger>
+											<SelectValue placeholder={"None"} />
+										</SelectTrigger>
+										<SelectContent>
+											{petBreeds &&
+												Object.keys(petBreeds).map((petType) => {
+													return petBreeds[petType].map((breed) => (
+														<SelectItem key={breed} value={breed}>
+															{breed}
+														</SelectItem>
+													))
+												})}
+										</SelectContent>
+									</Select>
+								</div>
 							</div>
 							<div className="flex items-center space-x-2">
 								<Label htmlFor="sterilized_checkbox">{t("pet.sterilized")}?</Label>
@@ -113,14 +146,6 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 									}}
 								/>
 							</div>
-							{/* <div className="grid gap-2">
-                                <Label htmlFor="slider_weight">
-                                    {`${t('pet.weight')} = ${weight}`}
-                                </Label>
-                                <Slider id='slider_weight' value={[weight!]} onValueChange={(value) => {
-                                    setWeight(value[0])
-                                }} step={5} />
-                            </div> */}
 						</div>
 					</div>
 					<DrawerFooter className="flex w-full flex-row gap-1.5">

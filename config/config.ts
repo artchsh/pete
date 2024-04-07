@@ -1,6 +1,6 @@
 const API: { baseURL: string } = {
 	// @ts-expect-error vite
-	baseURL: import.meta.env.VITE_API as string,
+	baseURL: (import.meta.env.VITE_API as string) || window.location.origin.split(":").slice(0, 2).join(":") + ":8000",
 } as const
 
 const main = {
@@ -9,14 +9,14 @@ const main = {
 		["navigation_main_bar.pages.support", "/support"],
 		["navigation_main_bar.pages.about_us", "/about-us"],
 	],
-	howToInstallPictures: {
-		IOS: ["/images/pwa/ios/1.jpeg", "/images/pwa/ios/2.jpeg", "/images/pwa/ios/3.jpeg"],
-	},
 	languages: [
 		["ru", "🇷🇺 Русский"],
 		["kz", "🇰🇿 Қазақ тілі"],
-		["en-US", "🇬🇧 English"],
 	],
 } as const
 
-export { API, main }
+const LOCAL = {
+	liked: "_data_offline_liked",
+} as const
+
+export { API, main, LOCAL }

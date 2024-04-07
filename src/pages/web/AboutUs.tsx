@@ -8,11 +8,11 @@ export default function AboutUsPage() {
 	const { t } = useTranslation()
 
 	return (
-		<>
+		<div className="mt-20">
 			<Helmet>
 				<title>{"Pete - " + t("label.aboutUs")}</title>
 			</Helmet>
 			<AboutUsCard />
-		</>
+		</div>
 	)
 }

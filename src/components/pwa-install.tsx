@@ -53,6 +53,7 @@ const PWAInstallComponent = ({
 	const pwaInstallRef = useRef(null)
 
 	// Filter out null or undefined props
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const nonNullProps = Object.fromEntries(Object.entries(props).filter(([_, value]) => value != null))
 
 	useEffect(() => {
