@@ -2,15 +2,13 @@
 import { useTranslation } from "react-i18next"
 import { API } from "@config"
 import { Pet_Filter, AuthState, Pet_Response } from "@declarations"
-import { axiosAuth as axios, cn, defaultFilterValue, axiosErrorHandler, isPWA } from "@utils"
-import { useLocation, useNavigate } from "react-router-dom"
+import { axiosAuth as axios, defaultFilterValue, axiosErrorHandler, isPWA } from "@utils"
 import { LucideCat, LucideDog, MoveLeft, MoveRight } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CarouselItem, Carousel, CarouselContent, CarouselApi } from "@/components/ui/carousel"
-import { Filter, UserRound } from "lucide-react"
-import PWAInstallComponent from "@/components/pwa-install"
-import React, { useState, useEffect, useCallback } from "react"
+import { Filter } from "lucide-react"
+import React, { useState, useEffect, useCallback, lazy } from "react"
 import { toast } from "@/components/ui/use-toast"
 import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
@@ -18,20 +16,16 @@ import { AxiosResponse } from "axios"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import PetCard from "@/components/cards/pet"
 
-const commonClasses = "absolute top-0 p-2 z-50 m-2"
-const iconSize = "w-8 h-8"
-
-const CityAlert = React.lazy(() => import("@/components/popups/city-alert"))
-const PetFilter = React.lazy(() => import("@/components/pet-filter"))
+const PWAInstallComponent = lazy(() => import("@/components/pwa-install"))
+const CityAlert = lazy(() => import("@/components/alerts/city-alert"))
+const PetFilter = lazy(() => import("@/components/pet-filter"))
 
 export default function Main() {
 	// Setups
 	const { t } = useTranslation()
-	const navigate = useNavigate()
 	const isAuthenticated = useIsAuthenticated()
 	const authHeader = useAuthHeader()
 	const user = useAuthUser<AuthState>()
-	const location = useLocation()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
@@ -46,7 +40,7 @@ export default function Main() {
 	// Functions
 	const buildQueryString = useCallback(
 		(page: number): string => {
-			const params = new URLSearchParams(filter as Record<string, string>).toString()
+			const params = new URLSearchParams(filter as unknown as Record<string, string>).toString()
 			const paginationParams = `page=${page}&limit=10`
 			return `${paginationParams}&${params}`
 		},
@@ -126,23 +120,15 @@ export default function Main() {
 			setOpenInstall(true)
 		}
 		fetchPets()
-		console.log(location.state)
 	}, [])
 
 	return (
 		<>
 			<PWAInstallComponent icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={openInstall} />
 			{openAlertCity && <CityAlert setOpen={setOpenAlertCity} />}
-			<div
-				className={cn(commonClasses, "left-0")}
-				onClick={() => {
-					navigate("/pwa/profile")
-				}}>
-				<UserRound className={iconSize} />
-			</div>
 			<PetFilter updateFilter={updateFilter} filter={filter}>
-				<Button variant="link" className={cn(commonClasses, "right-0")}>
-					<Filter className={iconSize} />
+				<Button variant="link" className={"absolute right-0 top-0 z-50 m-2 p-2"}>
+					<Filter className={"h-8 w-8"} />
 				</Button>
 			</PetFilter>
 			<div className="flex h-screen w-full flex-col items-center justify-center p-4">
@@ -159,7 +145,6 @@ export default function Main() {
 									))}
 								</CarouselContent>
 							</Carousel>
-
 
 							<div className="mt-2 flex w-full justify-center gap-2 px-3">
 								<Button

@@ -12,10 +12,6 @@ export type Pet_Response = {
 	imagesPath: string[]
 	city: string
 	price: number
-	geolocation: {
-        latitude: number
-        longitude:  number
-    }
 	createdAt: string
 	updatedAt: string
 }
@@ -25,26 +21,22 @@ export interface Pet_Filter {
 	sterilized?: boolean
 	sex?: "male" | "female" | ""
 	weight?: number
-	owner_type?: "private" | "shelter" | "breeder" | "nursery" | ""
+	owner_type?: "private" | "shelter" | "breeder" | ""
+	breed: string
 }
 
 export type User_Response = {
 	_id: string
-	companyName: string
+	login: string
 	firstName: string
 	lastName: string
-	address: string
-	show_address: boolean
-	aboutMe: string
 	phone: string
-	type: "private" | "shelter" | "breeder" | "nursery"
-	social: {
-		telegram: string
-		instagram: string
-	}
+	type: "private" | "shelter" | "breeder"
+	instagram: string
 	password: string
 	liked: string[]
 	token: string
+	refreshToken: string
 	createdAt: string
 	updatedAt: string
 }
@@ -52,7 +44,7 @@ export type User_Response = {
 export interface AboutUsLanguage {
 	text: {
 		about_us: {
-			label: string,
+			label: string
 			heading: string
 			keys: [string, string][]
 			conclusion: string

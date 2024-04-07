@@ -9,7 +9,7 @@ export default function WebLayout() {
 			<NavigationBar />
 			<Toaster />
 			<div className="flex justify-center">
-				<main className="w-full md:max-w-7xl px-4">
+				<main className="w-full px-4 md:max-w-7xl">
 					<Outlet />
 				</main>
 			</div>

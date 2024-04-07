@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Home, Settings, User } from "lucide-react"
-import { AnimatePresence } from "framer-motion"
 
 export default function BottomBar() {
 	const [active, setActive] = useState<{
@@ -34,7 +33,7 @@ export default function BottomBar() {
 	}, [location])
 
 	return (
-		<nav className="fixed bottom-0 z-50 flex h-16 w-full justify-center bg-background/75">
+		<nav className="absolute bottom-0 flex h-16 w-full justify-center bg-background">
 			<div className="flex w-full max-w-xl items-center justify-around">
 				<Link className={`text-center ${active.main ? "text-[#C18DBF]" : "text-muted"}`} to={"/pwa/"} key={"main"}>
 					<Home className="mx-auto" />

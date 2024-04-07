@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { AddPetForm } from "@/components/forms/add-pet"
 import { Helmet } from "react-helmet"
 import { useNav } from "@/lib/contexts"
+import MobilePageHeader from "@/components/mobile-page-header"
 
 export default function AddPetPage() {
 	// Setups
@@ -41,7 +42,8 @@ export default function AddPetPage() {
 			<Helmet>
 				<title>{"Pete - " + t("header.petAdd")}</title>
 			</Helmet>
-			<div className="p-2 h-full">
+			<div className="h-full p-4">
+				<MobilePageHeader href="/pwa/profile" />
 				<AddPetForm />
 			</div>
 		</>

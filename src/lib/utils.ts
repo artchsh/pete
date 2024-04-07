@@ -14,14 +14,12 @@ export function cn(...inputs: ClassValue[]) {
 // lat lon
 export function calculateDistance(point1: [number, number], point2: [number, number]) {
 	const R = 6371e3 // metres
-	const φ1 = point1[0] * Math.PI / 180 // φ, λ in radians
-	const φ2 = point2[0] * Math.PI / 180
-	const Δφ = (point2[0] - point1[0]) * Math.PI / 180
-	const Δλ = (point2[1] - point1[1]) * Math.PI / 180
+	const φ1 = (point1[0] * Math.PI) / 180 // φ, λ in radians
+	const φ2 = (point2[0] * Math.PI) / 180
+	const Δφ = ((point2[0] - point1[0]) * Math.PI) / 180
+	const Δλ = ((point2[1] - point1[1]) * Math.PI) / 180
 
-	const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-		Math.cos(φ1) * Math.cos(φ2) *
-		Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+	const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
 	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
 	const distance = R * c // in metres
@@ -147,7 +145,7 @@ export function isPWA() {
 const filterValues = {
 	type: ["cat", "dog", "other"],
 	sex: ["male", "female"],
-	owner_type: ["private", "shelter", "breeder", "nursery"],
+	owner_type: ["private", "shelter", "breeder"],
 }
 
 export const defaultFilterValue: Pet_Filter = {
@@ -156,6 +154,7 @@ export const defaultFilterValue: Pet_Filter = {
 	sex: "",
 	weight: 0,
 	owner_type: "",
+	breed: "",
 }
 
 const axiosFetcher = (url: string) => axios.get(url).then((res) => res.data)

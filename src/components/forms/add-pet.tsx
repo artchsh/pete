@@ -20,7 +20,6 @@ import { AuthState } from "@/lib/declarations"
 import { useNavigate } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 import { AnimatePresence, motion } from "framer-motion"
-import { Cat, Dog } from "lucide-react"
 import { CatIcon, DogIcon } from "../icons"
 
 export function AddPetForm() {
@@ -41,6 +40,8 @@ export function AddPetForm() {
 		weight: z.string().transform((arg) => Number(arg)),
 		sex: z.enum(["male", "female"]),
 		description: z.string({ required_error: "Description is required!" }),
+		price: z.string().transform((arg) => Number(arg)),
+		breed: z.string().default(""),
 	})
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -52,6 +53,8 @@ export function AddPetForm() {
 			weight: 0,
 			sex: "male",
 			description: "",
+			price: 0,
+			breed: "",
 		},
 	})
 
@@ -60,6 +63,7 @@ export function AddPetForm() {
 	const [files, setFiles] = useState<undefined | Blob[]>(undefined)
 	const [images, setImages] = useState<never[]>([])
 	const [currentPage, setCurrentPage] = useState<number>(1)
+	const [petType, setPetType] = useState<string>("cat")
 
 	// Functions
 	function submitNewPet(values: z.infer<typeof formSchema>) {
@@ -71,7 +75,8 @@ export function AddPetForm() {
 			formData.append("description", values.description)
 			formData.append("type", values.type)
 			formData.append("sterilized", JSON.stringify(values.sterilized))
-			formData.append("weight", JSON.stringify(values.weight))
+			formData.append("weight", JSON.stringify(Number(values.weight)))
+			formData.append("price", JSON.stringify(Number(values.price)))
 			formData.append("sex", values.sex)
 			formData.append("ownerID", user._id)
 			formData.append("city", localStorage.getItem("_city") || "0")
@@ -90,7 +95,9 @@ export function AddPetForm() {
 				.then(() => {
 					toast({ description: t("label.success") })
 					setLoadingState(false)
-					queryClient.invalidateQueries({ queryKey: ["pets"] })
+					queryClient.invalidateQueries({
+						queryKey: ["user", user._id, "pets"],
+					})
 					navigate("/pwa/profile")
 				})
 				.catch(axiosErrorHandler)
@@ -106,7 +113,7 @@ export function AddPetForm() {
 
 	function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		if (currentPage === 3) {
+		if (currentPage === 9) {
 			if (form.formState.errors) {
 				toast({ title: t("notifications.formErrorsTitle"), description: t("notifications.formErrors"), duration: 50000 })
 			}
@@ -141,166 +148,195 @@ export function AddPetForm() {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={onSubmit} className="w-full h-full flex flex-col justify-around">
-				<AnimatePresence mode="wait">	
-					{currentPage === 1 && (
-						<motion.div className="grid w-full items-center gap-1.5" key={"page1"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="name"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("pet.name")}</FormLabel>
-										<FormControl>
-											<Input required {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 2 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page2"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="type"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("pet.type.default")}</FormLabel>
-										<div className="flex w-full h-full justify-around">
-											<button onClick={() => field.onChange("cat")}>
-												<CatIcon size={100} />
-												{/* {t("pet.type.cat")} */}
-											</button>
-											<button onClick={() => field.onChange("dog")}>
-												<DogIcon size={100} />
-												{/* {t("pet.type.dog")} */}
-											</button>
-										</div>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 3 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page3"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="birthDate"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("pet.birthDate")}</FormLabel>
-										<FormControl>
-											<Input type="date" required {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 4 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page4"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="sex"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("pet.sex.default")}</FormLabel>
-										<Select required onValueChange={field.onChange} defaultValue={field.value}>
+			<form onSubmit={onSubmit} className="flex w-full flex-col justify-around space-y-4">
+				<AnimatePresence mode="wait">
+					<motion.div layout>
+						{currentPage === 1 && (
+							<motion.div className="grid w-full items-center gap-1.5" key={"page1"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.name")}</FormLabel>
 											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder={t("pet.sex")} />
-												</SelectTrigger>
+												<Input required {...field} />
 											</FormControl>
-											<SelectContent>
-												{filterValues.sex.map((sex) => (
-													<SelectItem key={sex} value={sex}>
-														{t(`pet.sex.${sex}`)}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 5 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page5"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="sterilized"
-								render={({ field }) => (
-									<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-										<FormControl>
-											<Checkbox required checked={field.value} onCheckedChange={field.onChange} />
-										</FormControl>
-										<div className="space-y-1 leading-none">
-											<FormLabel>{t("pet.sterilized")}?</FormLabel>
-										</div>
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 6 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page6"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="weight"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("pet.weight")}</FormLabel>
-										<FormControl>
-											<Input type="number" required {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 7 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page7"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="description"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("pet.description")}</FormLabel>
-										<FormControl>
-											<Textarea required {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 8 && (
-						<motion.div className="grid w-full h-full items-center gap-1.5" key={"page8"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<ReactImageGallery items={images} showFullscreenButton={false} showPlayButton={false} />
-							<label htmlFor="picture">{t("pet.add.img")}</label>
-							<Input
-								id="picture"
-								type="file"
-								accept="image/png, image/jpeg, image/jpg"
-								multiple
-								required
-								onChange={(event) => {
-									const files = event.target.files ? Array.from(event.target.files) : []
-									setFiles(files)
-								}}
-							/>
-						</motion.div>
-					)}
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 2 && (
+							<motion.div className="grid w-full items-center gap-1.5" key={"page2"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="type"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.type.default")}</FormLabel>
+											<div className="flex w-full justify-around">
+												<button
+													type="button"
+													onClick={() => {
+														field.onChange("cat")
+														setPetType("cat")
+													}}>
+													<CatIcon size={100} color={petType === "cat" ? "#c18dbf" : "white"} />
+													{/* {t("pet.type.cat")} */}
+												</button>
+												<button
+													type="button"
+													onClick={() => {
+														field.onChange("dog")
+														setPetType("dog")
+													}}>
+													<DogIcon size={100} color={petType === "dog" ? "#c18dbf" : "white"} />
+													{/* {t("pet.type.dog")} */}
+												</button>
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 3 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page3"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="birthDate"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.birthDate")}</FormLabel>
+											<FormControl>
+												<Input type="date" required {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 4 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page4"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="sex"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.sex.default")}</FormLabel>
+											<Select required onValueChange={field.onChange} defaultValue={field.value}>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder={t("pet.sex")} />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{filterValues.sex.map((sex) => (
+														<SelectItem key={sex} value={sex}>
+															{t(`pet.sex.${sex}`)}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 5 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page5"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="sterilized"
+									render={({ field }) => (
+										<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+											<FormControl>
+												<Checkbox checked={field.value} onCheckedChange={field.onChange} />
+											</FormControl>
+											<div className="space-y-1 leading-none">
+												<FormLabel>{t("pet.sterilized")}?</FormLabel>
+											</div>
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 6 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page6"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="weight"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.weight")}</FormLabel>
+											<FormControl>
+												<Input type="number" required {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 7 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page7"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.description")}</FormLabel>
+											<FormControl>
+												<Textarea required {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 8 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page7"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="price"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("pet.price")}</FormLabel>
+											<FormControl>
+												<Input type="number" required {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 9 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page8"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<ReactImageGallery items={images} showFullscreenButton={false} showPlayButton={false} />
+								<label htmlFor="picture">{t("pet.add.img")}</label>
+								<Input
+									id="picture"
+									type="file"
+									accept="image/png, image/jpeg, image/jpg"
+									multiple
+									required
+									onChange={(event) => {
+										const files = event.target.files ? Array.from(event.target.files) : []
+										setFiles(files)
+									}}
+								/>
+							</motion.div>
+						)}
+					</motion.div>
 				</AnimatePresence>
 				<AnimatePresence>
-					<div className="flex gap-2 mb-2">
+					<div className="mb-2 flex gap-2">
 						{currentPage > 1 && (
 							<motion.div layout animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<Button type="button" variant="outline" onClick={prevStep}>
@@ -310,7 +346,7 @@ export function AddPetForm() {
 						)}
 						<motion.div className="w-full" layout>
 							<Button className="w-full" type="submit">
-								{loadingState ? <LoadingSpinner /> : currentPage < 8 ? t("label.next") : t("pet.add.btn")}
+								{loadingState ? <LoadingSpinner /> : currentPage < 9 ? t("label.next") : t("pet.add.btn")}
 							</Button>
 						</motion.div>
 					</div>

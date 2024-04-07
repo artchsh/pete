@@ -30,18 +30,13 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 	// Form Setups
 	const formSchema = z.object({
 		firstName: z.string().min(2),
-		companyName: z.string().optional(),
+		login: z.string().optional(),
 		lastName: z.string().min(2),
-		address: z.string().optional(),
 		phone: z
 			.string()
 			.min(7, { message: t("notifications.phone_length") })
 			.includes("+", { message: t("notifications.phone_international") }),
 		instagram: z
-			.union([z.string(), z.string().min(2)])
-			.optional()
-			.transform((e) => (e === "" ? undefined : e)),
-		telegram: z
 			.union([z.string(), z.string().min(2)])
 			.optional()
 			.transform((e) => (e === "" ? undefined : e)),
@@ -55,12 +50,10 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 		defaultValues: {
 			firstName: userData?.firstName,
 			lastName: userData?.lastName,
-			companyName: userData?.companyName,
+			login: userData?.login,
 			phone: userData?.phone,
-			instagram: userData?.social.instagram,
-			telegram: userData?.social.telegram,
+			instagram: userData?.instagram,
 			password: "",
-			address: "",
 		},
 	})
 
@@ -68,7 +61,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 	function getUserInfo() {
 		setLoadingState(true)
 		axios
-			.get(`${API.baseURL}/me`, { headers: { Authorization: authHeader } })
+			.get(`${API.baseURL}/users/me`, { headers: { Authorization: authHeader } })
 			.then((res: AxiosResponse) => {
 				const user: User_Response = res.data
 				setUserData(user)
@@ -79,18 +72,17 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		setLoadingState(true)
-		axios.post(`${API.baseURL}/me`,
+		axios
+			.post(
+				`${API.baseURL}/users/me`,
 				{
 					update: {
-						companyName: values.companyName,
+						login: values.login,
 						firstName: values.firstName,
 						lastName: values.lastName,
 						phone: values.phone,
 						password: values.password,
-						social: {
-							instagram: values.instagram,
-							telegram: values.telegram,
-						},
+						instagram: values.instagram,
 					},
 				},
 				{ headers: { Authorization: authHeader } },
@@ -114,9 +106,8 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 		if (userData) {
 			form.setValue("firstName", userData.firstName)
 			form.setValue("lastName", userData.lastName)
-			if (userData.companyName) form.setValue("companyName", userData.companyName)
-			form.setValue("instagram", userData.social.instagram)
-			form.setValue("telegram", userData.social.telegram)
+			if (userData.login) form.setValue("login", userData.login)
+			form.setValue("instagram", userData.instagram)
 			form.setValue("phone", userData.phone)
 		}
 	}, [userData, form])
@@ -131,21 +122,19 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 				{userData?._id && (
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
-							{userData.companyName && (
-								<FormField
-									control={form.control}
-									name="companyName"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>{t("user.companyName")}</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							)}
+							<FormField
+								control={form.control}
+								name="login"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>{t("user.login")}</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 							<div className="grid grid-cols-2 gap-3">
 								<FormField
 									control={form.control}
@@ -189,38 +178,12 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 							/>
 							<FormField
 								control={form.control}
-								name="address"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.address")}</FormLabel>
-										<FormControl>
-											<Input placeholder="" type="text" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
 								name="instagram"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>{t("user.instagram")}</FormLabel>
 										<FormControl>
 											<InputIcon icon={<span className="text-muted">instagram.com/</span>} {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="telegram"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.telegram")}</FormLabel>
-										<FormControl>
-											<InputIcon icon={<span className="text-muted">t.me/</span>} {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

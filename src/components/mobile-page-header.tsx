@@ -1,11 +1,9 @@
-import React, { lazy } from "react"
-import { ChevronLeft, Pencil } from "lucide-react"
+import React from "react"
+import { ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useNav } from "@/lib/contexts"
-
-const ChangeProfileForm = lazy(() => import("@/components/forms/change-profile"))
 
 export default function MobilePageHeader({ href }: { href: string }) {
 	// Setups
@@ -29,15 +27,7 @@ export default function MobilePageHeader({ href }: { href: string }) {
 				</Button>
 			</div>
 			<div className="flex items-center justify-center overflow-visible text-ellipsis text-2xl font-bold">{navText}</div>
-			<div className="flex w-full items-center justify-end pr-3">
-				{href === "/pwa" && (
-					<ChangeProfileForm>
-						<Button className="" type="submit" variant={"link"}>
-							<Pencil />
-						</Button>
-					</ChangeProfileForm>
-				)}
-			</div>
+			<div className="w-full"></div>
 		</div>
 	)
 }

@@ -12,8 +12,6 @@ import { axiosErrorHandler, filterValues } from "@utils"
 import { API } from "@config"
 import LoadingSpinner from "@/components/loading-spinner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "../ui/label"
-import { Checkbox } from "../ui/checkbox"
 import { useToast } from "../ui/use-toast"
 import { AnimatePresence, motion } from "framer-motion"
 const PhoneInput = React.lazy(() => import("../ui/phone-input").then((module) => ({ default: module.PhoneInput })))
@@ -39,15 +37,11 @@ export function RegisterForm() {
 				.includes("+", {
 					message: t("notifications.phone_international"),
 				}),
-			type: z.enum(["private", "shelter", "breeder", "nursery"]),
+			instagram: z.string().optional(),
+			type: z.enum(["private", "shelter", "breeder"]),
 			password: z.string().min(8, { message: t("notifications.password_length") }),
 			password_repeat: z.string().min(8, { message: t("notifications.password_length") }),
-			company_name: z.string().optional(),
-			address: z
-				.string()
-				.min(1, { message: t("notifications.firstName_req") })
-				.optional(),
-			showAdress: z.boolean().optional(),
+			login: z.string().optional(),
 		})
 		.superRefine(({ password_repeat, password }, ctx) => {
 			if (password_repeat !== password) {
@@ -65,16 +59,15 @@ export function RegisterForm() {
 			password_repeat: "",
 			firstName: "",
 			lastName: "",
-			company_name: "",
+			login: "",
 			type: "private",
-			address: "",
-			showAdress: false,
+			instagram: "",
 		},
 	})
 
 	// States
 	const [loadingState, setLoadingState] = useState<boolean>(false)
-	const [company, setCompany] = useState<boolean>()
+	const [showInstagramInput, setShowInstagramInput] = useState<boolean>(false)
 	const [currentPage, setCurrentPage] = useState<number>(1)
 
 	// Functions
@@ -120,161 +113,148 @@ export function RegisterForm() {
 		<Form {...form}>
 			<form onSubmit={onSubmit} className="w-full space-y-2">
 				<AnimatePresence mode="wait">
-					{currentPage === 1 && (
-						<motion.div className="grd-cols-1 grid gap-1.5" key={"page1"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<div className="flex w-full gap-1.5">
+					<motion.div layout>
+						{currentPage === 1 && (
+							<motion.div className="grd-cols-1 grid gap-1.5" key={"page1"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<div className="flex w-full gap-1.5">
+									<FormField
+										control={form.control}
+										name="firstName"
+										render={({ field }) => (
+											<FormItem className="w-full">
+												<FormLabel>{t("user.firstName")}</FormLabel>
+												<FormControl>
+													<Input required className="w-full" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="lastName"
+										render={({ field }) => (
+											<FormItem className="w-full">
+												<FormLabel>{t("user.lastName")}</FormLabel>
+												<FormControl>
+													<Input required className="w-full" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
 								<FormField
 									control={form.control}
-									name="firstName"
-									render={({ field }) => (
-										<FormItem className="w-full">
-											<FormLabel>{t("user.firstName")}</FormLabel>
-											<FormControl>
-												<Input className="w-full" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="lastName"
-									render={({ field }) => (
-										<FormItem className="w-full">
-											<FormLabel>{t("user.lastName")}</FormLabel>
-											<FormControl>
-												<Input className="w-full" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
-							<FormField
-								control={form.control}
-								name="phone"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.phone")}</FormLabel>
-										<FormControl>
-											<PhoneInput defaultCountry="KZ" placeholder={t("user.phone")} {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
-					{currentPage === 2 && (
-						<motion.div className="space-y-3" key={"page2"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="type"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.type.default")}</FormLabel>
-										<Select onValueChange={field.onChange} defaultValue={field.value}>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder={"-"} />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{filterValues.owner_type.map((ownerType) => (
-													<SelectItem key={ownerType} value={ownerType}>
-														{t(`user.type.${ownerType}`)}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<div className="flex items-center space-x-3 space-y-0 rounded-md border p-4">
-								<Checkbox
-									className="h-6 w-6 rounded-full"
-									id="company_checkbox"
-									checked={company}
-									onCheckedChange={(value) => {
-										setCompany(value !== "indeterminate" ? value : false)
-									}}
-								/>
-								<Label htmlFor="company_checkbox">{t("label.question.company")}</Label>
-							</div>
-							{company && (
-								<FormField
-									control={form.control}
-									name="company_name"
+									name="login"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>{t("user.companyName")}</FormLabel>
+											<FormLabel>{t("label.login")}</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input required {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-							)}
-							<FormField
-								control={form.control}
-								name="address"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.address")}</FormLabel>
-										<FormControl>
-											<Input placeholder="" type="text" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
+								<FormField
+									control={form.control}
+									name="phone"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("user.phone")}</FormLabel>
+											<FormControl>
+												<PhoneInput required defaultCountry="KZ" placeholder={t("user.phone")} {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 2 && (
+							<motion.div className="space-y-3" key={"page2"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="type"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("user.type.default")}</FormLabel>
+											<Select
+												onValueChange={(val) => {
+													field.onChange(val)
+													if (val != "private") {
+														setShowInstagramInput(true)
+													} else {
+														setShowInstagramInput(false)
+													}
+												}}
+												defaultValue={field.value}>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder={"-"} />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{filterValues.owner_type.map((ownerType) => (
+														<SelectItem key={ownerType} value={ownerType}>
+															{t(`user.type.${ownerType}`)}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								{showInstagramInput && (
+									<FormField
+										control={form.control}
+										name="instagram"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>{t("user.instagram")}</FormLabel>
+												<FormControl>
+													<Input required {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
 								)}
-							/>
-							<FormField
-								control={form.control}
-								name="showAdress"
-								render={({ field }) => (
-									<FormItem className="flex items-center space-x-3 space-y-0 rounded-md border p-4">
-										<FormControl>
-											<Checkbox className="h-6 w-6 rounded-full" onCheckedChange={field.onChange} />
-										</FormControl>
-										<FormLabel className="font-normal">{t("register.showAddress")}</FormLabel>
-									</FormItem>
-								)}
-							/>
-							
-						</motion.div>
-					)}
-					{currentPage === 3 && (
-						<motion.div key={"page3"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-							<FormField
-								control={form.control}
-								name="password"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.password")}</FormLabel>
-										<FormControl>
-											<Input placeholder="" type="password" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="password_repeat"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.passwordConfirm")}</FormLabel>
-										<FormControl>
-											<Input placeholder="" type="password" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</motion.div>
-					)}
+							</motion.div>
+						)}
+						{currentPage === 3 && (
+							<motion.div key={"page3"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="password"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("user.password")}</FormLabel>
+											<FormControl>
+												<Input placeholder="" type="password" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="password_repeat"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("user.passwordConfirm")}</FormLabel>
+											<FormControl>
+												<Input placeholder="" type="password" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</motion.div>
+						)}
+					</motion.div>
 				</AnimatePresence>
 				<AnimatePresence>
 					<div className="flex gap-2">
