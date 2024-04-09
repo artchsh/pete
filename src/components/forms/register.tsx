@@ -38,7 +38,7 @@ export function RegisterForm() {
 					message: t("notifications.phone_international"),
 				}),
 			instagram: z.string().optional(),
-			type: z.enum(["private", "shelter", "breeder"]),
+			type: z.enum(["private", "shelter"]),
 			password: z.string().min(8, { message: t("notifications.password_length") }),
 			password_repeat: z.string().min(8, { message: t("notifications.password_length") }),
 			login: z.string().optional(),

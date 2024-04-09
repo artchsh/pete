@@ -11,7 +11,6 @@ export type Pet_Response = {
 	ownerID: User_Response["_id"]
 	imagesPath: string[]
 	city: string
-	price: number
 	createdAt: string
 	updatedAt: string
 }
@@ -21,7 +20,7 @@ export interface Pet_Filter {
 	sterilized?: boolean
 	sex?: "male" | "female" | ""
 	weight?: number
-	owner_type?: "private" | "shelter" | "breeder" | ""
+	owner_type?: "private" | "shelter" | ""
 	breed: string
 }
 
@@ -31,7 +30,7 @@ export type User_Response = {
 	firstName: string
 	lastName: string
 	phone: string
-	type: "private" | "shelter" | "breeder"
+	type: "private" | "shelter" 
 	instagram: string
 	password: string
 	liked: string[]

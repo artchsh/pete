@@ -82,11 +82,14 @@ export function axiosErrorHandler(error: AxiosError) {
 				description: i18n.t(`api.${(error.response.data as { msg: APIErrors }).msg}`),
 				variant: "destructive",
 			})
-		if (error.response.status === 401)
+		if (error.response.status === 401) {
+			console.error(error.response)
 			return toast({
 				description: i18n.t("notifications.unauthorized"),
 				variant: "destructive",
 			})
+		}
+
 		console.error(error.response)
 		return toast({
 			title: String(error.status),
@@ -145,7 +148,7 @@ export function isPWA() {
 const filterValues = {
 	type: ["cat", "dog", "other"],
 	sex: ["male", "female"],
-	owner_type: ["private", "shelter", "breeder"],
+	owner_type: ["private", "shelter"],
 }
 
 export const defaultFilterValue: Pet_Filter = {
@@ -155,6 +158,14 @@ export const defaultFilterValue: Pet_Filter = {
 	weight: 0,
 	owner_type: "",
 	breed: "",
+}
+
+
+export function copyToClipboard(text: string) {
+	return () => {
+		navigator.clipboard.writeText(text)
+		toast({ description: i18n.t("label.copied") })
+	}
 }
 
 const axiosFetcher = (url: string) => axios.get(url).then((res) => res.data)

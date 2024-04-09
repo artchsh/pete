@@ -40,7 +40,6 @@ export function AddPetForm() {
 		weight: z.string().transform((arg) => Number(arg)),
 		sex: z.enum(["male", "female"]),
 		description: z.string({ required_error: "Description is required!" }),
-		price: z.string().transform((arg) => Number(arg)),
 		breed: z.string().default(""),
 	})
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -53,7 +52,6 @@ export function AddPetForm() {
 			weight: 0,
 			sex: "male",
 			description: "",
-			price: 0,
 			breed: "",
 		},
 	})
@@ -76,7 +74,6 @@ export function AddPetForm() {
 			formData.append("type", values.type)
 			formData.append("sterilized", JSON.stringify(values.sterilized))
 			formData.append("weight", JSON.stringify(Number(values.weight)))
-			formData.append("price", JSON.stringify(Number(values.price)))
 			formData.append("sex", values.sex)
 			formData.append("ownerID", user._id)
 			formData.append("city", localStorage.getItem("_city") || "0")
@@ -113,7 +110,7 @@ export function AddPetForm() {
 
 	function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		if (currentPage === 9) {
+		if (currentPage === 8) {
 			if (form.formState.errors) {
 				toast({ title: t("notifications.formErrorsTitle"), description: t("notifications.formErrors"), duration: 50000 })
 			}
@@ -145,6 +142,12 @@ export function AddPetForm() {
 		})
 		setImages(imagesObject)
 	}, [files])
+
+	useEffect(() => {
+		if (currentPage === 8) {
+			setImages([])
+		}
+	}, [currentPage])
 
 	return (
 		<Form {...form}>
@@ -300,23 +303,6 @@ export function AddPetForm() {
 							</motion.div>
 						)}
 						{currentPage === 8 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page7"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-								<FormField
-									control={form.control}
-									name="price"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>{t("pet.price")}</FormLabel>
-											<FormControl>
-												<Input type="number" required {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</motion.div>
-						)}
-						{currentPage === 9 && (
 							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page8"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<ReactImageGallery items={images} showFullscreenButton={false} showPlayButton={false} />
 								<label htmlFor="picture">{t("pet.add.img")}</label>
@@ -336,7 +322,7 @@ export function AddPetForm() {
 					</motion.div>
 				</AnimatePresence>
 				<AnimatePresence>
-					<div className="mb-2 flex gap-2">
+					<div className="flex gap-2">
 						{currentPage > 1 && (
 							<motion.div layout animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<Button type="button" variant="outline" onClick={prevStep}>
@@ -346,11 +332,12 @@ export function AddPetForm() {
 						)}
 						<motion.div className="w-full" layout>
 							<Button className="w-full" type="submit">
-								{loadingState ? <LoadingSpinner /> : currentPage < 9 ? t("label.next") : t("pet.add.btn")}
+								{loadingState ? <LoadingSpinner /> : currentPage < 8 ? t("label.next") : t("pet.add.btn")}
 							</Button>
 						</motion.div>
 					</div>
 				</AnimatePresence>
+				<div className="h-20"></div>
 			</form>
 		</Form>
 	)

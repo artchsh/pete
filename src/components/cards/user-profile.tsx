@@ -1,37 +1,45 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { User_Response } from "@declarations"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { axiosErrorHandler } from "@/lib/utils"
-import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { API } from "@config"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
-import useSignOut from "react-auth-kit/hooks/useSignOut"
 import { Button } from "../ui/button"
 import { useTranslation } from "react-i18next"
 import ChangeProfileForm from "../forms/change-profile"
 import { Pencil } from "lucide-react"
 import InstagramSection from "../instagram-section"
-import { useNavigate } from "react-router-dom"
+import SignOutButton from "../sign-out-button"
 
-export default function UserProfileCard({ _id }: { _id?: string }) {
+export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 	// Setups
 	const authHeader = useAuthHeader()
-	const navigate = useNavigate()
 	const { t } = useTranslation()
-	const signOut = useSignOut()
-	const { data: user, isPending: userPending } = useQuery<User_Response>({
-		queryKey: ["user", _id ? _id : "me"],
-		queryFn: () =>
-			axios
-				.get(`${API.baseURL}/${_id ? "users/" + _id : "users/me"}`, { headers: { Authorization: _id ? undefined : authHeader } })
-				.then((res) => res.data)
-				.catch(axiosErrorHandler),
-	})
+
+	// States
+	const [user, setUser] = useState<User_Response | undefined>(undefined)
+	const [loading, setLoading] = useState<boolean>(true)
+
+	// Functions
+	function fetchUser() {
+		axios
+			.get(`${API.baseURL}/users/${_id}`, { headers: { Authorization: _id != "me" ? undefined : authHeader } })
+			.then((res) => {
+				setUser(res.data)
+				
+			})
+			.catch(axiosErrorHandler)
+			.finally(() => setLoading(false))
+	}
+
+	useEffect(() => {
+		fetchUser()
+	}, [])
 
 	return (
 		<>
-			{userPending && <div>Loading...</div>}
+			{loading && <div>Loading...</div>}
 			{user && (
 				<>
 					<div className="flex gap-2 rounded-lg p-3 text-card-foreground shadow-sm">
@@ -50,14 +58,7 @@ export default function UserProfileCard({ _id }: { _id?: string }) {
 							{!_id ||
 								(_id === "me" && (
 									<div className="flex space-x-2">
-										<Button
-											onClick={() => {
-												signOut()
-												navigate("/pwa")
-											}}
-											variant={"destructive"}>
-											{t("label.signOut")}
-										</Button>
+										<SignOutButton />
 										<ChangeProfileForm>
 											<Button className="text-wrap">
 												<Pencil />
@@ -67,7 +68,7 @@ export default function UserProfileCard({ _id }: { _id?: string }) {
 								))}
 						</div>
 					</div>
-					<InstagramSection login={user?.instagram} />
+					{user?.instagram && <InstagramSection login={user?.instagram} />}
 				</>
 			)}
 		</>

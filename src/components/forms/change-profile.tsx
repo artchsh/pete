@@ -76,14 +76,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 			.post(
 				`${API.baseURL}/users/me`,
 				{
-					update: {
-						login: values.login,
-						firstName: values.firstName,
-						lastName: values.lastName,
-						phone: values.phone,
-						password: values.password,
-						instagram: values.instagram,
-					},
+					update: values,
 				},
 				{ headers: { Authorization: authHeader } },
 			)
@@ -127,7 +120,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 								name="login"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{t("user.login")}</FormLabel>
+										<FormLabel>{t("label.login")}</FormLabel>
 										<FormControl>
 											<Input {...field} />
 										</FormControl>
@@ -176,19 +169,21 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 									</FormItem>
 								)}
 							/>
-							<FormField
-								control={form.control}
-								name="instagram"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>{t("user.instagram")}</FormLabel>
-										<FormControl>
-											<InputIcon icon={<span className="text-muted">instagram.com/</span>} {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
+							{userData?.instagram && (
+								<FormField
+									control={form.control}
+									name="instagram"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("user.instagram")}</FormLabel>
+											<FormControl>
+												<InputIcon icon={<span className="text-muted">instagram.com/</span>} {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							)}
 							<FormField
 								control={form.control}
 								name="password"

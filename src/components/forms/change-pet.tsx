@@ -39,7 +39,6 @@ export default function ChangePetForm({ pet_id }: { pet_id: Pet_Response["_id"] 
 		weight: z.string(),
 		sex: z.enum(["male", "female"]),
 		description: z.string({ required_error: "Description is required!" }),
-		price: z.number().default(0),
 		breed: z.string().default(""),
 	})
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -52,7 +51,6 @@ export default function ChangePetForm({ pet_id }: { pet_id: Pet_Response["_id"] 
 			weight: "0",
 			sex: "male",
 			description: "",
-			price: 0,
 			breed: "",
 		},
 	})
@@ -80,7 +78,6 @@ export default function ChangePetForm({ pet_id }: { pet_id: Pet_Response["_id"] 
 			formData.append("weight", JSON.stringify(Number(values.weight)))
 			formData.append("sex", values.sex)
 			formData.append("ownerID", user._id)
-			formData.append("price", JSON.stringify(values.price))
 			formData.append("breed", values.breed)
 			formData.append("city", localStorage.getItem("_city") || "0")
 			formData.append("imagesPath", JSON.stringify(images.map((img) => img.original)))

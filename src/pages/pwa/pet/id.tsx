@@ -66,13 +66,6 @@ export default function PetPage() {
 				) : (
 					<p>Loading...</p>
 				)}
-				{pet ? (
-					<div>
-						<p className="text-2xl font-bold">{Math.round(pet.price)}₸</p>
-					</div>
-				) : (
-					<p>?</p>
-				)}
 			</div>
 			{pet && (
 				<div className="flex h-[70px] min-h-[70px] snap-x gap-2 overflow-hidden overflow-x-auto text-black">

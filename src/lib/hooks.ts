@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
-import { AuthState, Pet_Response } from "./declarations"
+import { AuthState, Pet_Response, User_Response } from "./declarations"
 import axios, { AxiosError } from "axios"
 import { API, LOCAL } from "@config"
 import { useEffect, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import i18n from "@/i18"
 import useAuthUser from "react-auth-kit/hooks/useAuthUser"
+import { axiosErrorHandler } from "./utils"
 
 export function useGetFavoritePets() {
 	// States
@@ -83,28 +84,29 @@ export function useGeoLocation() {
 export function useGetUserPets(user_id: string = "me") {
 	// Setups
 	const authHeader = useAuthHeader()
-	if (!authHeader) {
+	if (!authHeader && user_id == "me") {
 		return {
 			data: null,
-			error: null,
 			isPending: false,
 		}
 	}
-	const { data, error, isPending } = useQuery<Pet_Response[], AxiosError>({
-		queryKey: ["user", user_id, "pets"],
-		queryFn: () => axios.get(`${API.baseURL}/users/${user_id}/pets`, { headers: { Authorization: authHeader } }).then((res) => res.data),
-		retry(failureCount, error) {
-			if (error.response?.status === 401) {
-				return false
-			}
-			return failureCount < 2
-		},
-		enabled: !!user_id,
-	})
+
+	// States
+	const [pets, setPets] = useState<Pet_Response[] | undefined>(undefined)
+	const [loading, setLoading] = useState<boolean>(false)
+
+	// Fetch pets
+	function fetchUser() {
+		setLoading(true)
+		axios.get(`${API.baseURL}/users/${user_id}/pets`, { headers: { Authorization: authHeader } }).then((res) => { setPets(res.data); setLoading(false) }).catch(axiosErrorHandler)
+	}
+
+	useEffect(() => {
+		fetchUser()
+	}, [])
 
 	return {
-		data,
-		error,
-		isPending,
+		data: pets,
+		isPending: loading,
 	}
 }

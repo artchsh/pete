@@ -35,6 +35,8 @@ const ProfilePage = lazy(() => import("./pages/pwa/user/me"))
 const AddPetPage = lazy(() => import("./pages/pwa/pet/add"))
 import PetPage from "./pages/pwa/pet/id"
 import ChangePet from "./pages/pwa/pet/change"
+import ErrorBoundary from "./components/error-boundary"
+import ErrorPage from "./pages/Error"
 
 const refresh = createRefresh({
 	interval: 60 * 30 * 6, // The time in sec to refresh the Access token
@@ -47,8 +49,8 @@ const refresh = createRefresh({
 			return {
 				isSuccess: true,
 				newAuthToken: response.data.token,
-				newAuthTokenExpireIn: 60 * 60,
-				newRefreshTokenExpiresIn: 60 * 60 * 24,
+				newAuthTokenExpireIn: 60 * 60 * 60 * 60,
+				newRefreshTokenExpiresIn: 31536000,
 			}
 		} catch (error) {
 			console.error(error)
@@ -75,69 +77,71 @@ function AnimatedRoutes() {
 
 	return (
 		<AnimatePresence mode="wait" onExitComplete={() => console.log("Exit complete")}>
-			<Routes location={location} key={location.pathname}>
-				<Route element={<WebLayout />}>
-					<Route path="/support" element={<SupportPage />} />
-					<Route path="/" element={<IndexPage />} />
-					<Route path="/about-us" element={<AboutUsPage />} />
-				</Route>
-				<Route element={<PwaLayout />}>
-					<Route path="/auth">
-						<Route path="/auth/login" element={<Login />} />
-						<Route path="/auth/register" element={<Register />} />
+			<ErrorBoundary fallback={<ErrorPage />}>
+				<Routes location={location} key={location.pathname}>
+					<Route element={<WebLayout />}>
+						<Route path="/support" element={<SupportPage />} />
+						<Route path="/" element={<IndexPage />} />
+						<Route path="/about-us" element={<AboutUsPage />} />
 					</Route>
-					<Route path="/pwa" element={<MainPage />} />
-					<Route
-						path="/pwa/profile"
-						element={
-							<Suspense fallback={<ProfileSkeleton />}>
-								<ProfilePage />
-							</Suspense>
-						}
-					/>
-					<Route
-						path="/pwa/settings"
-						element={
-							<Suspense fallback={<SettingsSkeleton />}>
-								<Settings />
-							</Suspense>
-						}
-					/>
-					<Route
-						path="/pwa/users/:userId"
-						element={
-							<Suspense fallback={<UserSkeleton />}>
-								<UserPage />
-							</Suspense>
-						}
-					/>
-					<Route
-						path="/pwa/users/:userId/pets"
-						element={
-							<Suspense fallback={<UserSkeleton />}>
-								<PetsPage />
-							</Suspense>
-						}
-					/>
-					<Route
-						path="/pwa/pets/:petId"
-						element={
-							<Suspense fallback={<UserSkeleton />}>
-								<PetPage />
-							</Suspense>
-						}
-					/>
-					<Route path="/pwa/pets/:petId/change" element={<ChangePet />} />
-					<Route
-						path="/pwa/pets/add"
-						element={
-							<RequireAuth fallbackPath="/auth/login">
-								<AddPetPage />
-							</RequireAuth>
-						}
-					/>
-				</Route>
-			</Routes>
+					<Route element={<PwaLayout />}>
+						<Route path="/auth">
+							<Route path="/auth/login" element={<Login />} />
+							<Route path="/auth/register" element={<Register />} />
+						</Route>
+						<Route path="/pwa" element={<MainPage />} />
+						<Route
+							path="/pwa/profile"
+							element={
+								<Suspense fallback={<ProfileSkeleton />}>
+									<ProfilePage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path="/pwa/settings"
+							element={
+								<Suspense fallback={<SettingsSkeleton />}>
+									<Settings />
+								</Suspense>
+							}
+						/>
+						<Route
+							path="/pwa/users/:userId"
+							element={
+								<Suspense fallback={<UserSkeleton />}>
+									<UserPage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path="/pwa/users/:userId/pets"
+							element={
+								<Suspense fallback={<UserSkeleton />}>
+									<PetsPage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path="/pwa/pets/:petId"
+							element={
+								<Suspense fallback={<UserSkeleton />}>
+									<PetPage />
+								</Suspense>
+							}
+						/>
+						<Route path="/pwa/pets/:petId/change" element={<ChangePet />} />
+						<Route
+							path="/pwa/pets/add"
+							element={
+								<RequireAuth fallbackPath="/auth/login">
+									<AddPetPage />
+								</RequireAuth>
+							}
+						/>
+					</Route>
+				</Routes>
+			</ErrorBoundary>
 		</AnimatePresence>
 	)
 }
