@@ -36,12 +36,6 @@ export default function NavigationBar() {
 							{t(link[0])}
 						</Button>
 					))}
-					{/* <Button
-						onClick={() => {
-							navigate("/pwa")
-						}}>
-						{t("label.proceedPWA")}
-					</Button> */}
 				</div>
 			</div>
 		</header>

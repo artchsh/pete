@@ -77,6 +77,7 @@ export function AddPetForm() {
 			formData.append("sex", values.sex)
 			formData.append("ownerID", user._id)
 			formData.append("city", localStorage.getItem("_city") || "0")
+			formData.append("breed", values.breed)
 			if (files) {
 				for (let i = 0; i < files.length; i++) {
 					formData.append("images", files[i])
@@ -110,7 +111,7 @@ export function AddPetForm() {
 
 	function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		if (currentPage === 8) {
+		if (currentPage === 9) {
 			if (form.formState.errors) {
 				toast({ title: t("notifications.formErrorsTitle"), description: t("notifications.formErrors"), duration: 50000 })
 			}
@@ -144,7 +145,7 @@ export function AddPetForm() {
 	}, [files])
 
 	useEffect(() => {
-		if (currentPage === 8) {
+		if (currentPage === 9) {
 			setImages([])
 		}
 	}, [currentPage])
@@ -163,7 +164,7 @@ export function AddPetForm() {
 										<FormItem>
 											<FormLabel>{t("pet.name")}</FormLabel>
 											<FormControl>
-												<Input required {...field} />
+												<Input id="name" required {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -173,6 +174,28 @@ export function AddPetForm() {
 						)}
 						{currentPage === 2 && (
 							<motion.div className="grid w-full items-center gap-1.5" key={"page2"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+								<FormField
+									control={form.control}
+									name="breed"
+									render={({ field }) => (
+										<>
+											<FormItem>
+												<FormLabel>{t("pet.breed")}</FormLabel>
+												<FormControl>
+													<Input id="breed" required {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+											<Button variant={"secondary"} type="button" onClick={() => field.onChange("Дворняга")} className="w-fit">
+												{t("label.noBreed")}
+											</Button>
+										</>
+									)}
+								/>
+							</motion.div>
+						)}
+						{currentPage === 3 && (
+							<motion.div className="grid w-full items-center gap-1.5" key={"page3"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<FormField
 									control={form.control}
 									name="type"
@@ -205,8 +228,8 @@ export function AddPetForm() {
 								/>
 							</motion.div>
 						)}
-						{currentPage === 3 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page3"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						{currentPage === 4 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page4"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<FormField
 									control={form.control}
 									name="birthDate"
@@ -222,8 +245,8 @@ export function AddPetForm() {
 								/>
 							</motion.div>
 						)}
-						{currentPage === 4 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page4"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						{currentPage === 5 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page5"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<FormField
 									control={form.control}
 									name="sex"
@@ -250,8 +273,8 @@ export function AddPetForm() {
 								/>
 							</motion.div>
 						)}
-						{currentPage === 5 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page5"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						{currentPage === 6 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page6"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<FormField
 									control={form.control}
 									name="sterilized"
@@ -268,8 +291,8 @@ export function AddPetForm() {
 								/>
 							</motion.div>
 						)}
-						{currentPage === 6 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page6"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						{currentPage === 7 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page7"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<FormField
 									control={form.control}
 									name="weight"
@@ -285,8 +308,8 @@ export function AddPetForm() {
 								/>
 							</motion.div>
 						)}
-						{currentPage === 7 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page7"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						{currentPage === 8 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page8"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<FormField
 									control={form.control}
 									name="description"
@@ -302,8 +325,8 @@ export function AddPetForm() {
 								/>
 							</motion.div>
 						)}
-						{currentPage === 8 && (
-							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page8"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+						{currentPage === 9 && (
+							<motion.div className="grid h-full w-full items-center gap-1.5" key={"page9"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 								<ReactImageGallery items={images} showFullscreenButton={false} showPlayButton={false} />
 								<label htmlFor="picture">{t("pet.add.img")}</label>
 								<Input
@@ -332,7 +355,7 @@ export function AddPetForm() {
 						)}
 						<motion.div className="w-full" layout>
 							<Button className="w-full" type="submit">
-								{loadingState ? <LoadingSpinner /> : currentPage < 8 ? t("label.next") : t("pet.add.btn")}
+								{loadingState ? <LoadingSpinner /> : currentPage < 9 ? t("label.next") : t("pet.add.btn")}
 							</Button>
 						</motion.div>
 					</div>

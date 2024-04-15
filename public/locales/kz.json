@@ -99,13 +99,14 @@
     "userPets": "Питомцы пользователя",
     "newContentAvailable": "Доступно обновление. Установить?",
     "next": "Далее",
-    "install": "Установить",
+    "install": "Инструкция по установке",
     "web": "Веб-версия",
     "pets": "Питомцы",
     "signOut": "Выйти",
     "editProfile": "Реадактировать профиль",
     "whatsapp": "Whatsapp",
-    "login": "Логин"
+    "login": "Логин",
+    "noBreed": "Дворняга"
   },
   "text": {
     "about_us": {
@@ -169,7 +170,7 @@
     },
     "ownerType": "Иесі түрі",
     "sterilized": "Зарарсыздандырылған",
-    "weight": "Вес",
+    "weight": "Вес (В килограммах)",
     "liked": "Сізге ұнады",
     "updated": "Pet updated!",
     "kg": "КГ",
