@@ -37,6 +37,7 @@ import PetPage from "./pages/pwa/pet/id"
 import ChangePet from "./pages/pwa/pet/change"
 import ErrorBoundary from "./components/error-boundary"
 import ErrorPage from "./pages/Error"
+import GetStartedPage from "./pages/pwa/get-started"
 
 const refresh = createRefresh({
 	interval: 60 * 30 * 6, // The time in sec to refresh the Access token
@@ -84,6 +85,7 @@ function AnimatedRoutes() {
 						<Route path="/" element={<IndexPage />} />
 						<Route path="/about-us" element={<AboutUsPage />} />
 					</Route>
+					<Route path="/pwa/get-started" element={<GetStartedPage />} />
 					<Route element={<PwaLayout />}>
 						<Route path="/auth">
 							<Route path="/auth/login" element={<Login />} />

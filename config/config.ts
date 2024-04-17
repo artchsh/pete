@@ -17,6 +17,9 @@ const main = {
 
 const LOCAL = {
 	liked: "_data_offline_liked",
+	city: "_city",
+	userType: "_userType",
+	getStartedCompleted: "_getStartedCompleted",
 } as const
 
 export { API, main, LOCAL }

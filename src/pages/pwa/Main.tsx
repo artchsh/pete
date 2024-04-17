@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useTranslation } from "react-i18next"
-import { API } from "@config"
+import { API, LOCAL } from "@config"
 import { Pet_Filter, AuthState, Pet_Response } from "@declarations"
 import { axiosAuth as axios, defaultFilterValue, axiosErrorHandler, isPWA } from "@utils"
 import { LucideCat, LucideDog, MoveLeft, MoveRight } from "lucide-react"
@@ -15,6 +15,7 @@ import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 import { AxiosResponse } from "axios"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import PetCard from "@/components/cards/pet"
+import { useNavigate } from "react-router-dom"
 
 const PWAInstallComponent = lazy(() => import("@/components/pwa-install"))
 const CityAlert = lazy(() => import("@/components/alerts/city-alert"))
@@ -26,6 +27,7 @@ export default function Main() {
 	const isAuthenticated = useIsAuthenticated()
 	const authHeader = useAuthHeader()
 	const user = useAuthUser<AuthState>()
+	const navigate = useNavigate()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
@@ -112,6 +114,9 @@ export default function Main() {
 	}, [api])
 
 	useEffect(() => {
+		if ((!localStorage.getItem(LOCAL.getStartedCompleted) || localStorage.getItem(LOCAL.getStartedCompleted) === "false" || !localStorage.getItem(LOCAL.userType)) && !isAuthenticated) {
+			navigate("/pwa/get-started")
+		}
 		if (!localStorage.getItem("_city")) {
 			setOpenAlertCity(true)
 		}
