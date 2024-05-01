@@ -39,7 +39,7 @@ export default function User() {
 						<div>Loading...</div>
 					) : (
 						<div className="space-y-2">
-							<UserProfileCard />
+							<UserProfileCard _id={userId} />
 							<MyPetsSection user_id={userId} />
 						</div>
 					)}

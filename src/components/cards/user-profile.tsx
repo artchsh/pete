@@ -24,7 +24,7 @@ export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 	// Functions
 	function fetchUser() {
 		axios
-			.get(`${API.baseURL}/users/${_id}`, { headers: { Authorization: _id != "me" ? undefined : authHeader } })
+			.get(`${API.baseURL}/users/${_id}`, { headers: { Authorization: _id == "me" ? authHeader  : undefined } })
 			.then((res) => {
 				setUser(res.data)
 				

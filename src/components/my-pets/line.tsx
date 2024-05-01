@@ -62,7 +62,7 @@ export default function MyPetsLine({ _id }: { _id: string }) {
 		pet &&
 		!petPending && (
 			<>
-				<motion.div className="flex w-full items-center justify-between gap-2 rounded-lg border bg-card p-3 text-card-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+				<motion.div onClick={() => navigate("/pwa/pets/" + pet._id) } className="flex w-full items-center justify-between gap-2 rounded-lg border bg-card p-3 text-card-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 					<div className="flex items-center gap-2">
 						<Avatar>
 							<AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
