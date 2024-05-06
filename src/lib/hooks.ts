@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
-import { AuthState, Pet_Response, User_Response } from "./declarations"
+import { AuthState, Pet_Response } from "./declarations"
 import axios, { AxiosError } from "axios"
 import { API, LOCAL } from "@config"
 import { useEffect, useState } from "react"
