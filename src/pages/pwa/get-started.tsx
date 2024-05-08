@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 export default function GetStartedPage() {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
-	const [userType, setUserType] = React.useState<"private" | "shelter">("private")
+	const [userType, setUserType] = React.useState<"private" | "shelter" | undefined>()
 
 	function handleClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
 		localStorage.setItem(LOCAL.userType, e.currentTarget.name)
@@ -36,7 +36,6 @@ export default function GetStartedPage() {
 							<HomeIcon size={64} color="white" />
 							<p className="text-wrap text-muted">{t("getStarted.choice.private")}</p>
 						</Button>
-						{/* <Button onClick={handleClick} variant={"outline"} name="private">Nursery</Button> */}
 						<Button onClick={handleClick} className={cn("h-fit flex-col gap-2 active:scale-100", userType === "shelter" ? " border-purple-300" : "")} variant={"outline"} name="shelter">
 							{t("user.type.shelter")}
 							<PawIcon size={64} color="white" />
