@@ -115,6 +115,8 @@ export function AddPetForm() {
 			if (form.formState.errors) {
 				toast({ title: t("notifications.formErrorsTitle"), description: t("notifications.formErrors"), duration: 50000 })
 			}
+			// @ts-expect-error Yandex Metrica function
+			ym(96355513,"reachGoal","add-pet-submission")
 			form.handleSubmit(submitNewPet)(event)
 			return
 		}
