@@ -18,7 +18,6 @@ import PetCard from "@/components/cards/pet"
 import { useNavigate } from "react-router-dom"
 
 // const PWAInstallComponent = lazy(() => import("@/components/pwa-install"))
-const CityAlert = lazy(() => import("@/components/alerts/city-alert"))
 const PetFilter = lazy(() => import("@/components/pet-filter"))
 
 export default function Main() {
@@ -36,7 +35,6 @@ export default function Main() {
 	const [current, setCurrent] = useState(0)
 	const [page, setPage] = useState<number>(1)
 	const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
-	const [openAlertCity, setOpenAlertCity] = useState<boolean>(false)
 	// const [openInstall, setOpenInstall] = useState<boolean>(false)
 
 	// Functions
@@ -117,9 +115,6 @@ export default function Main() {
 		if ((!localStorage.getItem(LOCAL.getStartedCompleted) || localStorage.getItem(LOCAL.getStartedCompleted) === "false" || !localStorage.getItem(LOCAL.userType)) && !isAuthenticated) {
 			navigate("/pwa/get-started")
 		}
-		if (!localStorage.getItem("_city")) {
-			setOpenAlertCity(true)
-		}
 		// // @ts-expect-error vite envs
 		// if (!isPWA() && import.meta.env.MODE === "production") {
 		// 	setOpenInstall(true)
@@ -130,7 +125,6 @@ export default function Main() {
 	return (
 		<>
 			{/* <PWAInstallComponent icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={openInstall} /> */}
-			{openAlertCity && <CityAlert setOpen={setOpenAlertCity} />}
 			<PetFilter updateFilter={updateFilter} filter={filter}>
 				<Button variant="link" className={"absolute right-0 top-0 z-50 m-2 p-2"}>
 					<Filter className={"h-8 w-8"} />
