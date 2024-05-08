@@ -37,16 +37,16 @@ export default function IndexPage() {
 					<div className="mx-auto grid items-center gap-1.5">
 						<ChangeLanguage label={false} />
 						<div className="flex gap-1.5">
-							<Button className="w-full" variant={"outline"} onClick={go}>
-								{t("label.web")}
+							<Button className="w-full" onClick={go}>
+								{t("label.goTo")}
 							</Button>
-							<Button
+							{/* <Button
 								className="w-full"
 								onClick={() => {
 									setShowHowToInstall(() => true)
 								}}>
 								{t("label.install")}
-							</Button>
+							</Button> */}
 						</div>
 					</div>
 				</Card>

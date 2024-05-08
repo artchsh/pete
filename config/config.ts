@@ -20,6 +20,8 @@ const LOCAL = {
 	city: "_city",
 	userType: "_userType",
 	getStartedCompleted: "_getStartedCompleted",
+	currentLanguage: "_currentLanguage",
+	i18nLanguage: "i18nextLng"
 } as const
 
 export { API, main, LOCAL }
