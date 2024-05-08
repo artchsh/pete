@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import ChangeLanguage from "@/components/change-language"
 import { Card } from "@/components/ui/card"
 import { useQuery } from "@/lib/utils"
-import PWAInstallComponent from "@/components/pwa-install"
+// import PWAInstallComponent from "@/components/pwa-install"
 import i18n from "@/i18"
 
 export default function IndexPage() {
@@ -15,7 +15,7 @@ export default function IndexPage() {
 	const query = useQuery()
 
 	// States
-	const [showHowToInstall, setShowHowToInstall] = React.useState(false)
+	// const [showHowToInstall, setShowHowToInstall] = React.useState(false)
 
 	// Functions
 	function go() {
@@ -52,7 +52,7 @@ export default function IndexPage() {
 				</Card>
 			</div>
 
-			<PWAInstallComponent manualApple icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={showHowToInstall} />
+			{/* <PWAInstallComponent manualApple icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={showHowToInstall} /> */}
 		</div>
 	)
 }

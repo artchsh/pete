@@ -17,7 +17,7 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import PetCard from "@/components/cards/pet"
 import { useNavigate } from "react-router-dom"
 
-const PWAInstallComponent = lazy(() => import("@/components/pwa-install"))
+// const PWAInstallComponent = lazy(() => import("@/components/pwa-install"))
 const CityAlert = lazy(() => import("@/components/alerts/city-alert"))
 const PetFilter = lazy(() => import("@/components/pet-filter"))
 
@@ -37,7 +37,7 @@ export default function Main() {
 	const [page, setPage] = useState<number>(1)
 	const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
 	const [openAlertCity, setOpenAlertCity] = useState<boolean>(false)
-	const [openInstall, setOpenInstall] = useState<boolean>(false)
+	// const [openInstall, setOpenInstall] = useState<boolean>(false)
 
 	// Functions
 	const buildQueryString = useCallback(
@@ -120,16 +120,16 @@ export default function Main() {
 		if (!localStorage.getItem("_city")) {
 			setOpenAlertCity(true)
 		}
-		// @ts-expect-error vite envs
-		if (!isPWA() && import.meta.env.MODE === "production") {
-			setOpenInstall(true)
-		}
+		// // @ts-expect-error vite envs
+		// if (!isPWA() && import.meta.env.MODE === "production") {
+		// 	setOpenInstall(true)
+		// }
 		fetchPets()
 	}, [])
 
 	return (
 		<>
-			<PWAInstallComponent icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={openInstall} />
+			{/* <PWAInstallComponent icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={openInstall} /> */}
 			{openAlertCity && <CityAlert setOpen={setOpenAlertCity} />}
 			<PetFilter updateFilter={updateFilter} filter={filter}>
 				<Button variant="link" className={"absolute right-0 top-0 z-50 m-2 p-2"}>
