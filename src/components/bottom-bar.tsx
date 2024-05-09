@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { Home, Settings, User } from "lucide-react"
+import { Heart, Home, Settings, User } from "lucide-react"
 
 export default function BottomBar() {
 	const [active, setActive] = useState<{
 		main: boolean
 		profile: boolean
+		favourites: boolean
 		settings: boolean
 	}>({
 		main: false,
 		profile: false,
+		favourites: false,
 		settings: false,
 	})
 	const { t } = useTranslation()
@@ -28,6 +30,7 @@ export default function BottomBar() {
 		setActive({
 			main: isActive("/pwa"),
 			profile: isActive("/pwa/profile"),
+			favourites: isActive("/pwa/favourites"),
 			settings: isActive("/pwa/settings"),
 		})
 	}, [location])
@@ -42,6 +45,10 @@ export default function BottomBar() {
 				<Link className={`text-center ${active.profile ? "text-[#C18DBF]" : "text-muted"}`} to={"/pwa/profile"} key={"profile"}>
 					<User className="mx-auto" />
 					<p className="text-xs">{t("navigation_main_bar.pages.profile")}</p>
+				</Link>
+				<Link className={`text-center ${active.favourites ? "text-[#C18DBF]" : "text-muted"}`} to={"/pwa/favourites"} key={"favoutites"}>
+					<Heart className="mx-auto" />
+					<p className="text-xs">{t("navigation_main_bar.pages.favourites")}</p>
 				</Link>
 				<Link className={`text-center ${active.settings ? "text-[#C18DBF]" : "text-muted"}`} to={"/pwa/settings"} key={"settings"}>
 					<Settings className="mx-auto" />

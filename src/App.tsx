@@ -38,6 +38,7 @@ import ChangePet from "./pages/pwa/pet/change"
 import ErrorBoundary from "./components/error-boundary"
 import ErrorPage from "./pages/Error"
 import GetStartedPage from "./pages/pwa/get-started"
+import FavouritesPage from "./pages/pwa/favourites"
 
 const refresh = createRefresh({
 	interval: 60 * 30 * 6, // The time in sec to refresh the Access token
@@ -106,6 +107,12 @@ function AnimatedRoutes() {
 								<Suspense fallback={<SettingsSkeleton />}>
 									<Settings />
 								</Suspense>
+							}
+						/>
+						<Route
+							path="/pwa/favourites"
+							element={
+								<FavouritesPage />
 							}
 						/>
 						<Route

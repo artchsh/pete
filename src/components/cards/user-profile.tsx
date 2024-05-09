@@ -11,6 +11,7 @@ import ChangeProfileForm from "../forms/change-profile"
 import { Pencil } from "lucide-react"
 import InstagramSection from "../instagram-section"
 import SignOutButton from "../sign-out-button"
+import { WhatsAppIcon } from "../icons"
 
 export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 	// Setups
@@ -49,10 +50,11 @@ export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 								<AvatarFallback>P</AvatarFallback>
 							</Avatar>
 							<p className="mt-2 w-[140px] font-semibold">{user.login ? user.login : `${user.firstName} ${user.lastName}`}</p>
+							{user.login && <p className="text-muted">{`${user.firstName} ${user.lastName}`}</p>}
 						</div>
 						<div className="flex max-h-full w-full flex-col justify-between">
-							<Button className="w-full" onClick={() => window.open("https://wa.me/" + user.phone.replace("+", ""), "_blank")}>
-								{t("label.whatsapp")}
+							<Button className="w-fit bg-green-500 text-white font-bold flex gap-1.5" onClick={() => window.open("https://wa.me/" + user.phone.replace("+", ""), "_blank")}>
+								{t("label.whatsapp")}<WhatsAppIcon size={18} color="white" />
 							</Button>
 
 							{!_id ||

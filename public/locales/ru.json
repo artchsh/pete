@@ -104,10 +104,12 @@
     "pets": "Питомцы",
     "signOut": "Выйти",
     "editProfile": "Реадактировать профиль",
-    "whatsapp": "Whatsapp",
+    "whatsapp": "WhatsApp",
     "login": "Логин",
     "noBreed": "Дворняга",
-    "goTo": "Перейти"
+    "goTo": "Перейти",
+    "seeFavourites": "Здесь вы можете видеть лайкнутых питмоцев!",
+    "authorizeToProfile": "Чтобы сделать свой профиль, Вам нужно авторизовться."
   },
   "text": {
     "about_us": {
@@ -211,7 +213,8 @@
       "support": "Поддержка",
       "about_us": "О нас",
       "profile": "Профиль",
-      "settings": "Настройки"
+      "settings": "Настройки",
+      "favourites": "Понравившиеся"
     }
   },
   "button": {

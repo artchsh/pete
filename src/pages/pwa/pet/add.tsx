@@ -46,6 +46,7 @@ export default function AddPetPage() {
 				<MobilePageHeader href="/pwa/profile" />
 				<AddPetForm />
 			</div>
+			<div className="h-20"></div>
 		</>
 	)
 }

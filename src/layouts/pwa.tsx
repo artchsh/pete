@@ -14,7 +14,6 @@ export default function PwaLayout() {
 					<AnimatePresence mode="wait">
 						<Outlet />
 					</AnimatePresence>
-					<div className="h-20"></div>
 				</main>
 			</motion.div>
 			<BottomBar />

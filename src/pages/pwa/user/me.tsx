@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Helmet } from "react-helmet"
 import { useNav } from "@/lib/contexts"
 import MyPetsSection from "@/components/my-pets/section"
-import FavoritesSection from "@/components/favorites/section"
+import { ShieldQuestionIcon } from "lucide-react"
 
 const MyProfileSection = lazy(() => import("@/components/cards/user-profile"))
 
@@ -26,23 +26,33 @@ export default function Profile() {
 			<Helmet>
 				<title>{"Pete - " + t("header.profile")}</title>
 			</Helmet>
-			<div className="block w-full space-y-2 p-3">
+			<div className="block h-screen w-full space-y-2 p-3">
 				<Suspense fallback={<div>Loading...</div>}>
 					{isAuthenticated ? (
-						<MyProfileSection _id="me" />
+						<>
+							<MyProfileSection _id="me" />
+							<MyPetsSection />
+						</>
 					) : (
-						<Button
-							variant={"secondary"}
-							className="w-full gap-2 font-bold"
-							onClick={() => {
-								navigate("/auth/login")
-							}}>
-							{t("button.authorization")}
-						</Button>
+						<div className="flex h-full flex-col items-center justify-center">
+							<div className="rounded-xl bg-card p-3">
+								<div className="mb-3 flex max-w-[300px] items-center gap-1.5">
+									<ShieldQuestionIcon className="h-14 w-20" />
+									<h1 className="h-fit text-wrap">{t("label.authorizeToProfile")}</h1>
+								</div>
+								<Button
+									variant={"secondary"}
+									className="w-full font-bold"
+									onClick={() => {
+										navigate("/auth/login")
+									}}>
+									{t("button.authorization")}
+								</Button>
+							</div>
+						</div>
 					)}
 				</Suspense>
-				<MyPetsSection />
-				<FavoritesSection />
+				<div className="h-20"></div>
 			</div>
 		</>
 	)
