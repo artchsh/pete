@@ -128,17 +128,17 @@ export default function Main() {
 					{loadingPets && <p className="mb-2 w-full animate-pulse rounded-lg border bg-card p-4 font-semibold">{t("label.updatePets")}...</p>}
 					{allPets.length > 0 ? (
 						<>
-							<Carousel setApi={setApi} className="mb-5" opts={{ loop: false }}>
+							<Carousel setApi={setApi} opts={{ loop: false }} id="_carousel" >
 								<CarouselContent>
 									{allPets.map((pet) => (
-										<CarouselItem key={pet._id}>
+										<CarouselItem id="_carousel_item" className="max-w-[95vw]" key={pet._id}>
 											<PetCard {...pet} _id={pet._id} />
 										</CarouselItem>
 									))}
 								</CarouselContent>
 							</Carousel>
 
-							<div className="mt-2 flex w-full justify-center gap-2 px-3">
+							<div className="mt-5 flex w-full justify-center gap-2 px-3">
 								<Button
 									size={"icon"}
 									variant={"secondary"}
