@@ -10,13 +10,13 @@ export default function FavoritesSection() {
 	const { t } = useTranslation()
 
 	// Fetch data
-	const { data: favoritePets, isPending: favoritePetsPending } = useGetFavoritePets()
+	const { data: favoritePets } = useGetFavoritePets()
 
 	return (
 		<div className="mt-3 rounded-lg bg-card p-3 shadow-lg">
 			<p className="mb-2 flex gap-2 font-bold">
 				{t("label.myLikes")}
-				{favoritePetsPending && <LoadingSpinner />}
+				{typeof favoritePets !== typeof [] || !(favoritePets.length == 0)  && <LoadingSpinner />}
 			</p>
 			<div className="grid grid-cols-3 gap-2">
 				<AnimatePresence>{favoritePets && favoritePets.length > 0 && favoritePets?.map((pet, index) => <LikedPet key={index} pet_id={pet} />)}</AnimatePresence>

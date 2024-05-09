@@ -86,7 +86,7 @@ export default function PetPage() {
 						<p className="text-red-800/60">{t("pet.sterilized")}</p>
 					</div>
 					<div className="fflex mr-6 flex-col items-center justify-center rounded-2xl bg-yellow-200 p-2 px-4">
-						<p className="text-nowrap font-semibold">{`~${pet.weight} ${t("pet.kg")}`}</p>
+						<p className="text-nowrap font-semibold">{`~${Math.round(Number(pet.weight))} ${t("pet.kg")}`}</p>
 						<p className="text-yellow-800/60">{t("pet.weight")}</p>
 					</div>
 				</div>

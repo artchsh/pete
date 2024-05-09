@@ -2,7 +2,7 @@
 import { useTranslation } from "react-i18next"
 import { API, LOCAL } from "@config"
 import { Pet_Filter, AuthState, Pet_Response } from "@declarations"
-import { axiosAuth as axios, defaultFilterValue, axiosErrorHandler, isPWA } from "@utils"
+import { axiosAuth as axios, defaultFilterValue, axiosErrorHandler } from "@utils"
 import { LucideCat, LucideDog, MoveLeft, MoveRight } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,7 +17,6 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import PetCard from "@/components/cards/pet"
 import { useNavigate } from "react-router-dom"
 
-// const PWAInstallComponent = lazy(() => import("@/components/pwa-install"))
 const PetFilter = lazy(() => import("@/components/pet-filter"))
 
 export default function Main() {
@@ -35,7 +34,6 @@ export default function Main() {
 	const [current, setCurrent] = useState(0)
 	const [page, setPage] = useState<number>(1)
 	const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
-	// const [openInstall, setOpenInstall] = useState<boolean>(false)
 
 	// Functions
 	const buildQueryString = useCallback(
@@ -115,16 +113,11 @@ export default function Main() {
 		if ((!localStorage.getItem(LOCAL.getStartedCompleted) || localStorage.getItem(LOCAL.getStartedCompleted) === "false" || !localStorage.getItem(LOCAL.userType)) && !isAuthenticated) {
 			navigate("/pwa/get-started")
 		}
-		// // @ts-expect-error vite envs
-		// if (!isPWA() && import.meta.env.MODE === "production") {
-		// 	setOpenInstall(true)
-		// }
 		fetchPets()
 	}, [])
 
 	return (
 		<>
-			{/* <PWAInstallComponent icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={openInstall} /> */}
 			<PetFilter updateFilter={updateFilter} filter={filter}>
 				<Button variant="link" className={"absolute right-0 top-0 z-50 m-2 p-2"}>
 					<Filter className={"h-8 w-8"} />
