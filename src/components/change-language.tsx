@@ -15,7 +15,7 @@ export default function ChangeLanguage({ label = true }: { label?: boolean }) {
 
 	// Functions
 	function isLangaugeActiveToStyle(langCode: string) {
-		return (i18n.language === langCode || currentLanguage === langCode) ? "bg-background border-2 border-primary" : "bg-background"
+		return ((i18n.language === langCode || currentLanguage === langCode) ? "border-2 border-primary" : "")  + " rounded-xl bg-background"
 	}
 
 	function setI18NLanguage(langCode: string) {
@@ -36,9 +36,9 @@ export default function ChangeLanguage({ label = true }: { label?: boolean }) {
 	}, [])
 
 	return (
-		<div className="grid w-full items-center gap-1.5 z-[999]">
+		<div className={`grid w-full items-center gap-1.5 ${label ? "bg-card p-3 rounded-xl" : ""}`}>
 			{label && <Label>{t("label.language")}</Label>}
-			<div className="flex gap-1.5 w-full *:w-full *:px-3 *:py-2 *:first:rounded-l-xl *:last:rounded-r-xl">
+			<div className="flex gap-1.5 w-full *:w-full *:px-3 *:py-2">
 				{languages.map((languageSet) => (
 					<button key={languageSet[0]} onClick={() => { setI18NLanguage(languageSet[0]) }} className={isLangaugeActiveToStyle(languageSet[0])}>{languageSet[1]}</button>
 				))}
