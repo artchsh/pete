@@ -21,7 +21,7 @@ export default function MyPetsSection({ user_id = "me" }: { user_id?: string }) 
 
 	return (
 
-			<div className="mt-3 rounded-lg bg-card p-3 shadow-lg">
+			<div className="mt-3 rounded-lg bg-card p-3 border">
 				<div className="flex justify-between">
 					<p className="font-bold">{user_id === "me" ? t("label.myPets") : t("label.pets")}</p>
 					{userPets && userPets.length > 3 && (

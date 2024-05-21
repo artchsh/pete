@@ -1,12 +1,10 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { Button } from "../ui/button"
-import { useNavigate } from "react-router-dom"
 import { Github, Instagram } from "lucide-react"
 
 export default function ProjectCard({ description = false, social = false }: { description?: boolean; social?: boolean }) {
 	const { t } = useTranslation()
-	const navigate = useNavigate()
 
 	return (
 		<div className="flex flex-col items-center justify-center p-4">
@@ -14,10 +12,10 @@ export default function ProjectCard({ description = false, social = false }: { d
 			<p className="text-2xl font-semibold">Pete</p>
 			{social && (
 				<div className="flex gap-2">
-					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => navigate("https://github.com/pete-kz")}>
+					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => window.open("https://github.com/pete-kz", "_blank")}>
 						Github <Github />
 					</Button>
-					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => navigate("https://instagram.com/pete.kazakhstan")}>
+					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => window.open("https://instagram.com/pete.kazakhstan", "_blank")}>
 						Instagram <Instagram />
 					</Button>
 				</div>

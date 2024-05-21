@@ -1,33 +1,31 @@
-import { useQuery } from "@tanstack/react-query"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
-import { AuthState, Pet_Response } from "./declarations"
-import axios, { AxiosError } from "axios"
+import { Pet_Response } from "./declarations"
+import axios from "axios"
 import { API, LOCAL } from "@config"
 import { useEffect, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import i18n from "@/i18"
-import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 import { axiosErrorHandler } from "./utils"
 
+/**
+ * Custom hook to fetch and manage favorite pets data.
+ * @returns An object containing the favorite pets data, error, and pending status.
+ */
 export function useGetFavoritePets() {
 	// States
 	const [favoritePets, setFavoritePets] = useState<Pet_Response["_id"][]>([])
+	const [fetchedFavoritePets, setFetchedFavoritePets] = useState<Pet_Response[] | undefined>(undefined)
+	const [isPending, setIsPending] = useState<boolean>(true)
 
 	// Setups
 	const authHeader = useAuthHeader()
-	const authState = useAuthUser<AuthState>()
 
-	const { data, error, isPending } = useQuery<Pet_Response[], AxiosError>({
-		queryKey: ["user", "pets", authState?._id, "liked"],
-		queryFn: () => axios.get(`${API.baseURL}/users/me/liked`, { headers: { Authorization: authHeader } }).then((res) => res.data),
-		retry(failureCount, error) {
-			if (error.response?.status === 401) {
-				return false
-			}
-			return failureCount < 2
-		},
-		enabled: !!authState,
-	})
+	function _fetchUserFavoritePets() {
+		setIsPending(true)
+		axios.get(`${API.baseURL}/users/me/liked`, { headers: { Authorization: authHeader } }).then((res) => {
+			setFetchedFavoritePets(res.data)
+		})
+	}
 
 	function _fetchFavoritePetsLocalStorage() {
 		const _favoritePets = localStorage.getItem(LOCAL.liked)
@@ -38,13 +36,14 @@ export function useGetFavoritePets() {
 	}
 
 	useEffect(() => {
+		_fetchUserFavoritePets()
 		const _favoritePets = _fetchFavoritePetsLocalStorage()
-		setFavoritePets(() => [..._favoritePets, ...((data && data?.length > 0 && data?.map((pet) => pet._id)) || [])])
+		setFavoritePets(() => [..._favoritePets, ...((fetchedFavoritePets && fetchedFavoritePets?.length > 0 && fetchedFavoritePets?.map((pet) => pet._id)) || [])]) // Add fetched favorite pets to local state
+		setIsPending(false)
 	}, [])
 
 	return {
 		data: favoritePets,
-		error,
 		isPending,
 	}
 }

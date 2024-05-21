@@ -211,7 +211,7 @@ export function AddPetForm() {
 														field.onChange("cat")
 														setPetType("cat")
 													}}>
-													<CatIcon size={100} color={petType === "cat" ? "#c18dbf" : "white"} />
+													<CatIcon size={100} color={petType === "cat" ? "black" : "grey"} />
 													{/* {t("pet.type.cat")} */}
 												</button>
 												<button
@@ -220,7 +220,7 @@ export function AddPetForm() {
 														field.onChange("dog")
 														setPetType("dog")
 													}}>
-													<DogIcon size={100} color={petType === "dog" ? "#c18dbf" : "white"} />
+													<DogIcon size={100} color={petType === "dog" ? "black" : "grey"} />
 													{/* {t("pet.type.dog")} */}
 												</button>
 											</div>

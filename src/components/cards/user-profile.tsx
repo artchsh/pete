@@ -43,19 +43,20 @@ export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 			{loading && <div>Loading...</div>}
 			{user && (
 				<>
-					<div className="flex gap-2 rounded-lg p-3 text-card-foreground shadow-sm">
+					<div className="flex gap-2 rounded-lg p-3 text-card-foreground">
 						<div>
-							<Avatar className="h-[140px] w-[140px] shadow-vertical-secondary">
+							{/* <Avatar className="h-[140px] w-[140px] shadow-vertical-secondary">
 								<AvatarImage src={"/images/pete-logo.svg"} alt={"PETE"} />
 								<AvatarFallback>P</AvatarFallback>
-							</Avatar>
+							</Avatar> */}
 							<p className="mt-2 w-[140px] font-semibold">{user.login ? user.login : `${user.firstName} ${user.lastName}`}</p>
-							{user.login && <p className="text-muted">{`${user.firstName} ${user.lastName}`}</p>}
-						</div>
-						<div className="flex max-h-full w-full flex-col justify-between">
+							{user.login && <p>{`${user.firstName} ${user.lastName}`}</p>}
 							<Button className="w-fit bg-green-500 text-white font-bold flex gap-1.5" onClick={() => window.open("https://wa.me/" + user.phone.replace("+", ""), "_blank")}>
 								{t("label.whatsapp")}<WhatsAppIcon size={18} color="white" />
 							</Button>
+						</div>
+						<div className="flex max-h-full w-full flex-col justify-between">
+							
 
 							{!_id ||
 								(_id === "me" && (

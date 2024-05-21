@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { CarouselItem, Carousel, CarouselContent, CarouselApi } from "@/components/ui/carousel"
 import { Filter } from "lucide-react"
 import React, { useState, useEffect, useCallback, lazy } from "react"
-import { toast } from "@/components/ui/use-toast"
 import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 import { AxiosResponse } from "axios"
@@ -58,7 +57,7 @@ export default function Main() {
 
 	const addNewPets = useCallback(
 		(pets: Pet_Response[]): Pet_Response[] => {
-			toast({ description: "Pets updated!" })
+			console.debug({ description: "Pets updated!" })
 			const filteredNewPets = pets.filter((pet) => !allPets.find(({ _id }) => _id === pet._id))
 			const combinedPets = [...allPets, ...filteredNewPets]
 			// This checks if there are new pets to add and combines them with the existing pets.
@@ -118,11 +117,11 @@ export default function Main() {
 
 	return (
 		<>
-			<PetFilter updateFilter={updateFilter} filter={filter}>
+			{/* <PetFilter updateFilter={updateFilter} filter={filter}>
 				<Button variant="link" className={"absolute right-0 top-0 z-50 m-2 p-2"}>
 					<Filter className={"h-8 w-8"} />
 				</Button>
-			</PetFilter>
+			</PetFilter> */}
 			<div className="flex h-screen w-full flex-col items-center justify-center p-4">
 				<div className="max-w-md">
 					{loadingPets && <p className="mb-2 w-full animate-pulse rounded-lg border bg-card p-4 font-semibold">{t("label.updatePets")}...</p>}

@@ -52,7 +52,7 @@ export default function PetPage() {
 	return (
 		<>
 			<motion.div className="relative" layout>
-				<Button size={"icon"} onClick={() => navigate("/pwa")} className="absolute left-6 top-6 z-[1] w-fit rounded-sm bg-white">
+				<Button size={"icon"} onClick={() => navigate("/pwa")} className="absolute left-6 top-6 z-[1] w-fit rounded-sm bg-white text-primary">
 					<ArrowLeft />
 				</Button>
 				{pet && <LikeButton pet={pet} />}
@@ -67,6 +67,22 @@ export default function PetPage() {
 					<p>Loading...</p>
 				)}
 			</div>
+			{ownerData && (
+				<div
+					className="flex items-center justify-between gap-2 rounded-lg p-6 py-3 pt-2 text-card-foreground"
+					onClick={() => {
+						navigate("/pwa/users/" + pet?.ownerID)
+					}}>
+					<div className="flex items-center gap-2">
+						<Avatar>
+							<AvatarImage src={"/images/pete-logo.svg"} alt={"PETE"} />
+							<AvatarFallback>P</AvatarFallback>
+						</Avatar>
+						<p className="font-semibold">{ownerData.login ? ownerData.login : `${ownerData.firstName} ${ownerData.lastName}`}</p>
+					</div>
+					<Button className="h-full text-wrap">{t("btn.goProfile")}</Button>
+				</div>
+			)}
 			{pet && (
 				<div className="flex h-[70px] min-h-[70px] snap-x gap-2 overflow-hidden overflow-x-auto text-black">
 					<div className="fflex ml-6 flex-col items-center justify-center rounded-2xl bg-green-200 p-2 px-4">
@@ -85,31 +101,17 @@ export default function PetPage() {
 						<p className="text-nowrap font-semibold">{pet.sterilized ? t("label.yes") : t("label.no")}</p>
 						<p className="text-red-800/60">{t("pet.sterilized")}</p>
 					</div>
-					<div className="fflex mr-6 flex-col items-center justify-center rounded-2xl bg-yellow-200 p-2 px-4">
+					<div className="flex mr-6 flex-col items-center justify-center rounded-2xl bg-yellow-200 p-2 px-4">
 						<p className="text-nowrap font-semibold">{`~${Math.round(Number(pet.weight))} ${t("pet.kg")}`}</p>
 						<p className="text-yellow-800/60">{t("pet.weight")}</p>
 					</div>
 				</div>
 			)}
-			<div className="p-6 py-2">
-				<pre className="mb-0 mt-3 text-wrap rounded-lg bg-border p-3 font-sans font-normal">{pet && pet.description}</pre>
+			
+			<div className="p-6 pt-0">
+				<pre className="mb-0 mt-3 text-wrap rounded-lg bg-card border p-3 font-sans font-normal">{pet && pet.description}</pre>
 			</div>
-			{ownerData && (
-				<div
-					className="flex items-center justify-between gap-2 rounded-lg p-6 py-2 text-card-foreground shadow-sm"
-					onClick={() => {
-						navigate("/pwa/users/" + pet?.ownerID)
-					}}>
-					<div className="flex items-center gap-2">
-						<Avatar>
-							<AvatarImage src={"/images/pete-logo.svg"} alt={"PETE"} />
-							<AvatarFallback>P</AvatarFallback>
-						</Avatar>
-						<p className="font-semibold">{ownerData.login ? ownerData.login : `${ownerData.firstName} ${ownerData.lastName}`}</p>
-					</div>
-					<Button className="h-full text-wrap">{t("btn.goProfile")}</Button>
-				</div>
-			)}
+			
 			<div className="h-16" />
 		</>
 	)
