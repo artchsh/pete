@@ -9,7 +9,7 @@ import { formatAge } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, UserCircle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion } from "framer-motion"
 const LikeButton = lazy(() => import("@/components/favorites/button"))
@@ -58,7 +58,7 @@ export default function PetPage() {
 				{pet && <LikeButton pet={pet} />}
 				<ReactImageGallery onImageError={() => console.log("error")} items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
 			</motion.div>
-			<div className="flex w-full justify-between p-6 pb-2">
+			<div className="flex w-full justify-between px-6 mt-2">
 				{pet ? (
 					<div>
 						<p className="text-2xl font-semibold">{pet.name}</p>
@@ -69,15 +69,12 @@ export default function PetPage() {
 			</div>
 			{ownerData && (
 				<div
-					className="flex items-center justify-between gap-2 rounded-lg p-6 py-3 pt-2 text-card-foreground"
+					className="flex items-center justify-between gap-2 rounded-lg px-6 text-card-foreground"
 					onClick={() => {
 						navigate("/pwa/users/" + pet?.ownerID)
 					}}>
 					<div className="flex items-center gap-2">
-						<Avatar>
-							<AvatarImage src={"/images/pete-logo.svg"} alt={"PETE"} />
-							<AvatarFallback>P</AvatarFallback>
-						</Avatar>
+						<UserCircle />
 						<p className="font-semibold">{ownerData.login ? ownerData.login : `${ownerData.firstName} ${ownerData.lastName}`}</p>
 					</div>
 					<Button className="h-full text-wrap">{t("btn.goProfile")}</Button>

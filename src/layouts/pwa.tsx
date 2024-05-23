@@ -9,8 +9,8 @@ export default function PwaLayout() {
 	return (
 		<NavProvider>
 			<Toaster />
-			<motion.div className="h-screen" animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-				<main className={"relative h-full w-full max-w-lg bg-background"}>
+			<motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+				<main className={"relative"}>
 					<AnimatePresence mode="wait">
 						<Outlet />
 					</AnimatePresence>

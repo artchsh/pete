@@ -4,7 +4,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import RequireAuth from "@auth-kit/react-router/RequireAuth"
 import AuthProvider from "react-auth-kit/AuthProvider"
 import createStore from "react-auth-kit/createStore"
-import createRefresh from "react-auth-kit/createRefresh"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AnimatePresence } from "framer-motion"
 
@@ -13,8 +12,6 @@ import PwaLayout from "./layouts/pwa"
 import WebLayout from "./layouts/web"
 import ProfileSkeleton from "./pages/skeletons/profile"
 import SettingsSkeleton from "./pages/skeletons/settings"
-import axios from "axios"
-import { API } from "@config"
 import UserSkeleton from "./pages/skeletons/user"
 
 // pages
@@ -38,38 +35,10 @@ import ChangePet from "./pages/pwa/pet/change"
 import ErrorBoundary from "./components/error-boundary"
 import ErrorPage from "./pages/Error"
 import GetStartedPage from "./pages/pwa/get-started"
-import FavouritesPage from "./pages/pwa/favourites"
-
-const refresh = createRefresh({
-	interval: 60 * 30 * 6, // The time in sec to refresh the Access token
-	refreshApiCallback: async (param) => {
-		try {
-			const response = await axios.post(`${API.baseURL}/auth/refresh`, param, {
-				headers: { Authorization: `Bearer ${param.authToken}` },
-			})
-			console.log("Refreshing")
-			return {
-				isSuccess: true,
-				newAuthToken: response.data.token,
-				newAuthTokenExpireIn: 60 * 60 * 60 * 60,
-				newRefreshTokenExpiresIn: 31536000,
-			}
-		} catch (error) {
-			console.error(error)
-			return {
-				isSuccess: false,
-				newAuthToken: "",
-				newAuthTokenExpireIn: 0,
-				newRefreshTokenExpiresIn: 0,
-			}
-		}
-	},
-})
 
 const store = createStore({
 	authName: "_auth",
-	authType: "localstorage",
-	refresh,
+	authType: "localstorage"
 })
 
 const queryClient = new QueryClient()
@@ -107,12 +76,6 @@ function AnimatedRoutes() {
 								<Suspense fallback={<SettingsSkeleton />}>
 									<Settings />
 								</Suspense>
-							}
-						/>
-						<Route
-							path="/pwa/favourites"
-							element={
-								<FavouritesPage />
 							}
 						/>
 						<Route

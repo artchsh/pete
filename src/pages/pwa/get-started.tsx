@@ -27,23 +27,23 @@ export default function GetStartedPage() {
 		<>
 			<div className="h-screen w-full p-4">
 				<div className="space-y-3">
-					<div className="space-y-3 rounded-lg bg-card p-3 text-center">
+					<div className="space-y-3 p-3 text-center">
 						<h1 className="text-2xl font-bold">{t("getStarted.title")}</h1>
 						<p className="text-center">{t("getStarted.description")}</p>
 					</div>
 					<div className="grid grid-rows-1 grid-cols-2 w-full max-w-full gap-3">
 						<Button onClick={handleClick} className={cn("h-full flex-col gap-2 active:scale-100", userType === "private" ? " border-purple-300" : "")} variant={"outline"} name="private">
 							{t("user.type.private")}
-							<HomeIcon size={64} color="white" />
-							<p className="text-wrap text-muted">{t("getStarted.choice.private")}</p>
+							<HomeIcon size={64} color="black" />
+							<p className="text-wrap">{t("getStarted.choice.private")}</p>
 						</Button>
 						<Button onClick={handleClick} className={cn("h-full flex-col gap-2 active:scale-100", userType === "shelter" ? " border-purple-300" : "")} variant={"outline"} name="shelter">
 							{t("user.type.shelter")}
-							<PawIcon size={64} color="white" />
-							<p className="text-wrap text-muted">{t("getStarted.choice.shelter")}</p>
+							<PawIcon size={64} color="black" />
+							<p className="text-wrap">{t("getStarted.choice.shelter")}</p>
 						</Button>
 					</div>
-					<div className="space-y-3 rounded-lg bg-card p-3 text-center">
+					<div className="space-y-3 p-3 text-center">
 				
 						<p className="text-center">{t("warning.city.description")}</p>
 					</div>

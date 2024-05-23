@@ -146,7 +146,7 @@ export function isPWA() {
 }
 
 const filterValues = {
-	type: ["cat", "dog", "other"],
+	type: ["cat", "dog"],
 	sex: ["male", "female"],
 	owner_type: ["private", "shelter"],
 }

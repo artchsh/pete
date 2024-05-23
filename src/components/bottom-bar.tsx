@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { Heart, Home, Settings, User } from "lucide-react"
+import { Home, Settings, User } from "lucide-react"
 
 export default function BottomBar() {
 	const [active, setActive] = useState<{
 		main: boolean
 		profile: boolean
-		favourites: boolean
 		settings: boolean
 	}>({
 		main: false,
 		profile: false,
-		favourites: false,
 		settings: false,
 	})
 	const { t } = useTranslation()
@@ -30,14 +28,13 @@ export default function BottomBar() {
 		setActive({
 			main: isActive("/pwa"),
 			profile: isActive("/pwa/profile"),
-			favourites: isActive("/pwa/favourites"),
 			settings: isActive("/pwa/settings"),
 		})
 	}, [location])
 
 	return (
 		<nav className="absolute bottom-0 flex h-20 pt-2 w-full justify-center bg-background">
-			<div className="w-full max-w-xl grid grid-cols-4 mx-4">
+			<div className="w-full max-w-xl grid grid-cols-3 mx-4">
 				<Link className="text-center text-primary" to={"/pwa/"} key={"main"}>
 					<div className={`${active.main ? "rounded-md bg-secondary" : ""} py-1 transition-all ease-in-out duration-150`}>
 						<Home className={"mx-auto"} />
@@ -49,12 +46,6 @@ export default function BottomBar() {
 						<User className={"mx-auto"} />
 					</div>
 					<p className="text-xs">{t("navigation_main_bar.pages.profile")}</p>
-				</Link>
-				<Link className="text-center text-primary" to={"/pwa/favourites"} key={"favoutites"}>
-					<div className={`${active.favourites ? "rounded-md bg-secondary" : ""} py-1 transition-all ease-in-out duration-150`}>
-						<Heart className={"mx-auto"} />
-					</div>
-					<p className="text-xs">{t("navigation_main_bar.pages.favourites")}</p>
 				</Link>
 				<Link className="text-center text-primary" to={"/pwa/settings"} key={"settings"}>
 					<div className={`${active.settings ? "rounded-md bg-secondary" : ""} py-1 transition-all ease-in-out duration-150`}>

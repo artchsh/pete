@@ -54,7 +54,6 @@ export function LoginForm() {
 							token: response.data.token,
 							type: "Bearer",
 						},
-						refresh: response.data.refreshToken,
 						userState: response.data.docs,
 					})
 				) {

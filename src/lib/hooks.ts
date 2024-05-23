@@ -8,24 +8,13 @@ import i18n from "@/i18"
 import { axiosErrorHandler } from "./utils"
 
 /**
- * Custom hook to fetch and manage favorite pets data.
+ * Custom hook to fetch pet ids.
  * @returns An object containing the favorite pets data, error, and pending status.
  */
 export function useGetFavoritePets() {
 	// States
 	const [favoritePets, setFavoritePets] = useState<Pet_Response["_id"][]>([])
-	const [fetchedFavoritePets, setFetchedFavoritePets] = useState<Pet_Response[] | undefined>(undefined)
 	const [isPending, setIsPending] = useState<boolean>(true)
-
-	// Setups
-	const authHeader = useAuthHeader()
-
-	function _fetchUserFavoritePets() {
-		setIsPending(true)
-		axios.get(`${API.baseURL}/users/me/liked`, { headers: { Authorization: authHeader } }).then((res) => {
-			setFetchedFavoritePets(res.data)
-		})
-	}
 
 	function _fetchFavoritePetsLocalStorage() {
 		const _favoritePets = localStorage.getItem(LOCAL.liked)
@@ -36,9 +25,8 @@ export function useGetFavoritePets() {
 	}
 
 	useEffect(() => {
-		_fetchUserFavoritePets()
 		const _favoritePets = _fetchFavoritePetsLocalStorage()
-		setFavoritePets(() => [..._favoritePets, ...((fetchedFavoritePets && fetchedFavoritePets?.length > 0 && fetchedFavoritePets?.map((pet) => pet._id)) || [])]) // Add fetched favorite pets to local state
+		setFavoritePets(() => [..._favoritePets])
 		setIsPending(false)
 	}, [])
 

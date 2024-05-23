@@ -124,10 +124,10 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 											<SelectValue placeholder={"None"} />
 										</SelectTrigger>
 										<SelectContent>
-											{petBreeds &&
+											{petBreeds && petBreeds != undefined &&
 												Object.keys(petBreeds).map((petType) => {
 													return petBreeds[petType].map((breed) => (
-														<SelectItem key={breed} value={breed}>
+														<SelectItem key={breed} value={breed || "loading"}>
 															{breed}
 														</SelectItem>
 													))

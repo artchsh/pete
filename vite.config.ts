@@ -1,4 +1,3 @@
-import MillionCompiler from "million/compiler"
 import { PluginOption, defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa"
@@ -168,7 +167,6 @@ const manifest: Partial<ManifestOptions> = {
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		MillionCompiler.vite({ auto: true }),
 		react(),
 		visualizer() as unknown as PluginOption,
 		VitePWA({
