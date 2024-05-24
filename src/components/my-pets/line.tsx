@@ -62,8 +62,8 @@ export default function MyPetsLine({ _id }: { _id: string }) {
 		pet &&
 		!petPending && (
 			<>
-				<motion.div onClick={() => navigate("/pwa/pets/" + pet._id) } className="flex w-full items-center justify-between gap-2 rounded-lg border bg-card p-3 text-card-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-					<div className="flex items-center gap-2">
+				<motion.div className="flex w-full items-center justify-between gap-2 rounded-lg border bg-card p-3 text-card-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+					<div className="flex items-center gap-2 w-full" onMouseDown={() => navigate("/pwa/pets/" + pet._id) }>
 						<Avatar>
 							<AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
 							<AvatarFallback>{pet.name[0]}</AvatarFallback>
@@ -71,11 +71,11 @@ export default function MyPetsLine({ _id }: { _id: string }) {
 						<p className="text-center">{pet.name}</p>
 					</div>
 					{authState && authState._id === pet.ownerID && (
-						<div className="grid grid-cols-2 grid-rows-1 gap-2">
+						<div className="grid grid-cols-2 grid-rows-1 gap-4 pr-2">
 							<Button
 								className="h-10 w-10 p-2"
 								variant={"outline"}
-								onClick={() => {
+								onMouseDown={() => {
 									navigate(`/pwa/pets/${pet._id}/change`)
 								}}>
 								<Pencil size={14} />
@@ -94,7 +94,7 @@ export default function MyPetsLine({ _id }: { _id: string }) {
 									<AlertDialogFooter>
 										<AlertDialogCancel>{t("alert.back")}</AlertDialogCancel>
 										<AlertDialogAction
-											onClick={() => {
+											onMouseDown={() => {
 												removePet(pet)
 											}}>
 											{t("alert.sure")}

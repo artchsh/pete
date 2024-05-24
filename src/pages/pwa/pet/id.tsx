@@ -10,7 +10,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, UserCircle } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion } from "framer-motion"
 const LikeButton = lazy(() => import("@/components/favorites/button"))
 
@@ -50,7 +49,7 @@ export default function PetPage() {
 	}, [pet])
 
 	return (
-		<>
+		<div className="space-y-2">
 			<motion.div className="relative" layout>
 				<Button size={"icon"} onClick={() => navigate("/pwa")} className="absolute left-6 top-6 z-[1] w-fit rounded-sm bg-white text-primary">
 					<ArrowLeft />
@@ -58,11 +57,11 @@ export default function PetPage() {
 				{pet && <LikeButton pet={pet} />}
 				<ReactImageGallery onImageError={() => console.log("error")} items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
 			</motion.div>
-			<div className="flex w-full justify-between px-6 mt-2">
+			<div className="flex w-full justify-between px-6">
 				{pet ? (
-					<div>
+					
 						<p className="text-2xl font-semibold">{pet.name}</p>
-					</div>
+					
 				) : (
 					<p>Loading...</p>
 				)}
@@ -82,11 +81,11 @@ export default function PetPage() {
 			)}
 			{pet && (
 				<div className="flex h-[70px] min-h-[70px] snap-x gap-2 overflow-hidden overflow-x-auto text-black">
-					<div className="fflex ml-6 flex-col items-center justify-center rounded-2xl bg-green-200 p-2 px-4">
+					<div className="flex ml-6 flex-col items-center justify-center rounded-2xl bg-green-200 p-2 px-4">
 						<p className="text-nowrap font-semibold">{formatAge(pet.birthDate) as string}</p>
 						<p className="text-green-800/60">{t("pet.age")}</p>
 					</div>
-					<div className="lex flex-col items-center justify-center rounded-2xl bg-pink-200 p-2 px-4">
+					<div className="flex flex-col items-center justify-center rounded-2xl bg-pink-200 p-2 px-4">
 						<p className="text-nowrap font-semibold">{pet.breed}</p>
 						<p className="text-pink-800/60">{t("pet.breed")}</p>
 					</div>
@@ -105,11 +104,11 @@ export default function PetPage() {
 				</div>
 			)}
 			
-			<div className="p-6 pt-0">
-				<pre className="mb-0 mt-3 text-wrap rounded-lg bg-card border p-3 font-sans font-normal">{pet && pet.description}</pre>
+			<div className="px-6">
+				<pre className="mtext-wrap rounded-lg bg-card border p-3 font-sans font-normal">{pet && pet.description}</pre>
 			</div>
 			
 			<div className="h-16" />
-		</>
+		</div>
 	)
 }

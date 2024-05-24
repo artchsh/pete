@@ -24,7 +24,7 @@ export default function SimplePetCard({ pet, fetchById, petId }: { pet?: Pet_Res
 
 	return fetchedPet && (
         <div
-			onClick={() => {
+			onMouseDown={() => {
 				navigate(`/pwa/pets/${fetchedPet._id}`)
 			}}
 			key={fetchedPet._id}

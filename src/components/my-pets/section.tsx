@@ -1,14 +1,13 @@
-import React, { lazy } from "react"
+import React from "react"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { ArrowRight, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useGetUserPets } from "@/lib/hooks"
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import LoadingSpinner from "@/components/loading-spinner"
-
-const MyPetIconProfile = lazy(() => import("@/components/my-pets/profile-icon"))
+import SimplePetCard from "../cards/pet-simple"
 
 export default function MyPetsSection({ user_id = "me" }: { user_id?: string }) {
 	// Setups
@@ -24,11 +23,11 @@ export default function MyPetsSection({ user_id = "me" }: { user_id?: string }) 
 			<div className="mt-3 rounded-lg bg-card p-3 border">
 				<div className="flex justify-between">
 					<p className="font-bold">{user_id === "me" ? t("label.myPets") : t("label.pets")}</p>
-					{userPets && userPets.length > 3 && (
+					{userPets && (
 						<Button
 							variant={"link"}
-							className="m-0 h-fit items-center gap-1.5 p-0"
-							onClick={() => {
+							className="m-0 h-fit items-center gap-1.5 p-0 cursor-pointer"
+							onMouseDown={() => {
 								navigate(`/pwa/users/${user_id}/pets`)
 							}}>
 							{t("button.seeAll") + ` (${userPets.length})`}
@@ -36,16 +35,16 @@ export default function MyPetsSection({ user_id = "me" }: { user_id?: string }) 
 						</Button>
 					)}
 				</div>
-				<motion.div layout className="mt-2 grid grid-cols-3 grid-rows-1 gap-2">
+				<div className="mt-2 grid grid-cols-3 grid-rows-1 gap-2">
 					{userPetsPending && <LoadingSpinner />}
-					<AnimatePresence>{userPets?.slice(0, user_id === "me" ? 2 : 3).map((pet, index) => <MyPetIconProfile key={index} _id={pet._id} />)}</AnimatePresence>
+					<AnimatePresence>{userPets?.slice(0, user_id === "me" ? 2 : 3).map((pet) => <SimplePetCard pet={pet} key={pet._id} />)}</AnimatePresence>
 					{isAuthenticated && user_id === "me" && (
-						<motion.div className="flex flex-col items-center justify-center rounded-lg border bg-card text-card-foreground" onClick={() => navigate("/pwa/pets/add")} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+						<div className="flex flex-col items-center justify-center rounded-lg border bg-card text-card-foreground cursor-pointer" onMouseDown={() => navigate("/pwa/pets/add")}>
 							<Plus />
 							<p className="h-fit p-2 pt-0 text-center">{t("pet.add.btn")}</p>
-						</motion.div>
+						</div>
 					)}
-				</motion.div>
+				</div>
 			</div>
 		
 	)

@@ -16,7 +16,7 @@ export default function MobilePageHeader({ href }: { href: string }) {
 			<div className="flex items-center justify-start pl-3">
 				<Button
 					variant={"link"}
-					onClick={() => {
+					onMouseDown={() => {
 						navigate(href)
 					}}
 					className="flex h-fit justify-start gap-1 p-4 pl-0 text-muted-foreground">
@@ -27,7 +27,6 @@ export default function MobilePageHeader({ href }: { href: string }) {
 				</Button>
 			</div>
 			<div className="flex items-center justify-center overflow-visible text-ellipsis text-2xl font-bold">{navText}</div>
-			<div className="w-full"></div>
 		</div>
 	)
 }

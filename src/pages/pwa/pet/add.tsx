@@ -42,8 +42,9 @@ export default function AddPetPage() {
 			<Helmet>
 				<title>{"Pete - " + t("header.petAdd")}</title>
 			</Helmet>
-			<div className="h-full p-4">
-				<MobilePageHeader href="/pwa/profile" />
+			<MobilePageHeader href="/pwa/profile" />
+			<div className="h-full px-4">
+				
 				<AddPetForm />
 			</div>
 			<div className="h-20"></div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import { User_Response } from "@declarations"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { axiosErrorHandler } from "@/lib/utils"
 import axios from "axios"
 import { API } from "@config"
@@ -24,11 +23,12 @@ export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 
 	// Functions
 	function fetchUser() {
+		console.log("Fetching user: " + _id)
 		axios
-			.get(`${API.baseURL}/users/${_id}`, { headers: { Authorization: _id == "me" ? authHeader  : undefined } })
+			.get(`${API.baseURL}/users/${_id}`, { headers: { Authorization: _id == "me" ? authHeader : undefined } })
 			.then((res) => {
 				setUser(res.data)
-				
+				console.log(res.data)
 			})
 			.catch(axiosErrorHandler)
 			.finally(() => setLoading(false))
@@ -43,24 +43,18 @@ export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 			{loading && <div>Loading...</div>}
 			{user && (
 				<>
-					<div className="flex gap-2 rounded-lg p-3 text-card-foreground">
-						<div>
-							{/* <Avatar className="h-[140px] w-[140px] shadow-vertical-secondary">
-								<AvatarImage src={"/images/pete-logo.svg"} alt={"PETE"} />
-								<AvatarFallback>P</AvatarFallback>
-							</Avatar> */}
-							<p className="mt-2 w-[140px] font-semibold">{user.login ? user.login : `${user.firstName} ${user.lastName}`}</p>
-							{user.login && <p>{`${user.firstName} ${user.lastName}`}</p>}
-							<Button className="w-fit bg-green-500 text-white font-bold flex gap-1.5" onClick={() => window.open("https://wa.me/" + user.phone.replace("+", ""), "_blank")}>
-								{t("label.whatsapp")}<WhatsAppIcon size={18} color="white" />
-							</Button>
-						</div>
-						<div className="flex max-h-full w-full flex-col justify-between">
-							
+					<div className="flex flex-col gap-2 rounded-lg p-3 border">
+						{user.login && <p>{`${user.firstName} ${user.lastName}`}</p>}
+						<p className="w-[140px] font-semibold">{user.login ? user.login : `${user.firstName} ${user.lastName}`}</p>
 
+						<div className="grid w-fit grid-cols-1 grid-rows-2 gap-1.5">
+							<Button className="flex w-full gap-1.5 bg-green-500 font-bold text-white" onClick={() => window.open("https://wa.me/" + user.phone.replace("+", ""), "_blank")}>
+								{t("label.whatsapp")}
+								<WhatsAppIcon size={18} color="white" />
+							</Button>
 							{!_id ||
 								(_id === "me" && (
-									<div className="flex space-x-2">
+									<div className="grid grid-cols-2 grid-rows-1 gap-1.5">
 										<SignOutButton />
 										<ChangeProfileForm>
 											<Button className="text-wrap">

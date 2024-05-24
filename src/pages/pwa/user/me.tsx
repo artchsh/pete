@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet"
 import { useNav } from "@/lib/contexts"
 import MyPetsSection from "@/components/my-pets/section"
 import { ShieldQuestionIcon } from "lucide-react"
+import useSignOut from "react-auth-kit/hooks/useSignOut"
 
 const MyProfileSection = lazy(() => import("@/components/cards/user-profile"))
 
@@ -16,9 +17,14 @@ export default function Profile() {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { updateNavText } = useNav()
+	const signOut = useSignOut()
 
 	useEffect(() => {
 		updateNavText(t("header.profile"))
+
+		if (!isAuthenticated) {
+			signOut()
+		}
 	}, [])
 
 	return (
