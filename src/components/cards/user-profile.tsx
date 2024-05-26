@@ -11,11 +11,13 @@ import { Pencil } from "lucide-react"
 import InstagramSection from "../instagram-section"
 import SignOutButton from "../sign-out-button"
 import { WhatsAppIcon } from "../icons"
+import useSignOut from "react-auth-kit/hooks/useSignOut"
 
 export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 	// Setups
 	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
+	const signOut = useSignOut()
 
 	// States
 	const [user, setUser] = useState<User_Response | undefined>(undefined)
@@ -28,7 +30,10 @@ export default function UserProfileCard({ _id = "me" }: { _id?: string }) {
 			.get(`${API.baseURL}/users/${_id}`, { headers: { Authorization: _id == "me" ? authHeader : undefined } })
 			.then((res) => {
 				setUser(res.data)
-				console.log(res.data)
+				if (_id == "me" && res.data === null) {
+					signOut()
+					window.document.location.reload()
+				}
 			})
 			.catch(axiosErrorHandler)
 			.finally(() => setLoading(false))
