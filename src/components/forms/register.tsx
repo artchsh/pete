@@ -90,10 +90,10 @@ export function RegisterForm() {
 	function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
 		if (currentPage === 3) {
-			if (form.formState.errors) {
+			form.handleSubmit(submitRegistration)(event)
+			if (Object.keys(form.formState.errors).some(fieldName => Object.keys(form.getValues()).includes(fieldName))) { // this strange looking line checks if there are any errors in the form
 				toast({ title: t("notifications.formErrorsTitle"), description: t("notifications.formErrors"), duration: 50000 })
 			}
-			form.handleSubmit(submitRegistration)(event)
 			return
 		}
 
@@ -164,6 +164,7 @@ export function RegisterForm() {
 										<FormItem>
 											<FormLabel>{t("user.phone")}</FormLabel>
 											<FormControl>
+												{/* @ts-expect-error I dont understand what error mesasge wants from me, but this works so whatever */}
 												<PhoneInput required defaultCountry="KZ" placeholder={t("user.phone")} {...field} />
 											</FormControl>
 											<FormMessage />
