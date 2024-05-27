@@ -54,6 +54,13 @@ export interface AboutUsLanguage {
 export type APIErrors = "userNotFound" | "userExists" | "wrongPassword" | "internal" | "noAuth"
 
 export interface AuthState {
-	_id: string
-	phone: string
+	
+		_id: User_Response["_id"]
+		login: User_Response["login"]
+		firstName: User_Response["firstName"]
+		lastName: User_Response["lastName"]
+		phone: User_Response["phone"]
+		type: User_Response["type"]
+		instagram: User_Response["instagram"]
+	
 }

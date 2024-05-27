@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useTranslation } from "react-i18next"
 import { API, LOCAL } from "@config"
-import { Pet_Filter, Pet_Response } from "@declarations"
-import { axiosAuth as axios, defaultFilterValue } from "@utils"
+import { AuthState, Pet_Response } from "@declarations"
+import { axiosAuth as axios } from "@utils"
 import { HeartHandshakeIcon } from "lucide-react"
 // import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Input } from "@/components/ui/input"
 import { useGetFavoritePets } from "@/lib/hooks"
 import SimplePetCard from "@/components/cards/pet-simple"
+import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 
 // const PetFilter = lazy(() => import("@/components/pet-filter"))
 
@@ -22,6 +23,7 @@ export default function Main() {
 	// Setups
 	const { t } = useTranslation()
 	const isAuthenticated = useIsAuthenticated()
+	const authState = useAuthUser<AuthState>()
 	const { data: allPets } = useQuery<Pet_Response[]>({
 		queryKey: ["pets"],
 		queryFn: () => axios.get(`${API.baseURL}/pets`).then((res: AxiosResponse<Pet_Response[]>) => res.data),
@@ -30,12 +32,7 @@ export default function Main() {
 	const navigate = useNavigate()
 
 	// States
-	// const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
 	const [search, setSearch] = useState<string>("")
-
-	// function updateFilter(filter: Pet_Filter) {
-	// 	setFilter(() => filter)
-	// }
 
 	useEffect(() => {
 		if ((!localStorage.getItem(LOCAL.getStartedCompleted) || localStorage.getItem(LOCAL.getStartedCompleted) === "false" || !localStorage.getItem(LOCAL.userType)) && !isAuthenticated) {
@@ -45,6 +42,13 @@ export default function Main() {
 
 	return (
 		<>
+			{isAuthenticated && (
+				<div className="px-4 py-2 flex justify-between">
+					<div>
+					<span>{`👋 ${t("alert.welcomeBack")}, `}</span><span className="font-semibold">{authState?.firstName + " " + authState?.lastName}!</span>
+					</div>
+				</div>
+			)}
 			<div className="sticky top-0 flex items-center gap-1.5 bg-white px-4 py-2">
 				<Input
 					onChange={(e) => {
@@ -52,11 +56,6 @@ export default function Main() {
 					}}
 					placeholder={t("label.searchPets")}
 				/>
-				{/* <PetFilter updateFilter={updateFilter} filter={filter}>
-					<Button disabled variant={"outline"}>
-						<Filter className={"h-6 w-6"} />
-					</Button>
-				</PetFilter> */}
 			</div>
 			{likedPets && likedPets.length > 0 && (
 				<div className="mb-2 px-4">

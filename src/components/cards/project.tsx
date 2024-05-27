@@ -12,10 +12,10 @@ export default function ProjectCard({ description = false, social = false }: { d
 			<p className="text-2xl font-semibold">Pete</p>
 			{social && (
 				<div className="flex gap-2">
-					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => window.open("https://github.com/pete-kz", "_blank")}>
+					<Button variant={"link"} className="gap-2 p-0 text-black/75 transition-all duration-75 ease-in hover:bg-none hover:text-purple-500 hover:no-underline" onMouseDown={() => window.open("https://github.com/pete-kz", "_blank")}>
 						Github <Github />
 					</Button>
-					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => window.open("https://instagram.com/pete.kazakhstan", "_blank")}>
+					<Button variant={"link"} className="gap-2 p-0 text-black/75 transition-all duration-75 ease-in hover:bg-none hover:text-purple-500 hover:no-underline" onMouseDown={() => window.open("https://instagram.com/pete.kazakhstan", "_blank")}>
 						Instagram <Instagram />
 					</Button>
 				</div>
