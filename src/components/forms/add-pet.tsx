@@ -97,6 +97,7 @@ export function AddPetForm() {
 						queryKey: ["user", user._id, "pets"],
 					})
 					navigate("/pwa/profile")
+					window.location.reload()
 				})
 				.catch(axiosErrorHandler)
 		}
