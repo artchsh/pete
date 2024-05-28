@@ -12,7 +12,7 @@ const manifest: Partial<ManifestOptions> = {
 	display: "standalone",
 	background_color: "#ffffff",
 	lang: "ru",
-	theme_color: "#a855f7",
+	theme_color: "#ffffff",
 	id: "pete_pwa_app",
 	description: "Find a loving home for your pets!",
 	dir: "ltr",
