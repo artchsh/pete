@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom"
 import { APIErrors, Pet_Filter } from "./declarations"
 import { toast } from "@/components/ui/use-toast"
 import i18n from "../i18"
+import useSignOut from "react-auth-kit/hooks/useSignOut"
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -76,6 +77,8 @@ const token = () => `${localStorage.getItem("_auth_type")} ${localStorage.getIte
 const axiosAuth = setupCache(axios)
 
 export function axiosErrorHandler(error: AxiosError) {
+	const signOut = useSignOut()
+
 	if (error.response) {
 		if (error.response.status === 500 || error.response.status === 400)
 			return toast({
@@ -84,6 +87,7 @@ export function axiosErrorHandler(error: AxiosError) {
 			})
 		if (error.response.status === 401) {
 			console.error(error.response)
+			signOut()
 			return toast({
 				description: i18n.t("notifications.unauthorized"),
 				variant: "destructive",
